@@ -10,7 +10,10 @@ KEY:=~
 RKEYS:=$(KEY)/k1.keys
 VAL0:=15
 
-ENTRIES:=
+TSBIN:=bin
+USH:=usr/share
+UBIN:=.
+ENTRIES:=gosh help type var
 #DIRS:=
 
 PHONY += all dirs cc tty tt deploy clean
@@ -18,7 +21,6 @@ all: cc
 
 dirs:
 	mkdir -p $(DIRS)
-#	echo / > $(PROC)/cwd
 
 install: dirs cc hosts
 	@$(TOC) config --url gql.custler.net
@@ -34,9 +36,9 @@ deploy: $(DEPLOYED)
 $(BLD)/%.tvc: $(SRC)/%.sol
 	$(SOLC) $< -o $(BLD)
 	$(LINKER) compile --lib $(LIB) $(BLD)/$*.code -o $@
-#$(BLD)/$I.tvc: boot/$(SRC)/$I.sol
-#	$(SOLC) $< -o $(BLD)
-#	$(LINKER) compile --lib $(LIB) $(BLD)/$I.code -o $@
+$(BLD)/$I.tvc: $(SRC)/$I.sol
+	$(SOLC) $< -o $(BLD)
+	$(LINKER) compile --lib $(LIB) $(BLD)/$I.code -o $@
 $(BLD)/%.cs: $(BLD)/%.tvc
 	$(LINKER) decode --tvc $< | grep 'code:' | cut -d ' ' -f 3 | tr -d '\n' >$@
 
@@ -73,10 +75,60 @@ hosts:
 	rm -f etc/hosts
 	make etc/hosts
 
+$(BLD)/%.ress: $(BLD)/%.cs
+	$(eval args!=jq -R '{name:"$*",c:.}' $<)
+	$($I_c) update_model '$(args)' >$@
+	rm -f $(TSBIN)/$*.boc
+ss: $(patsubst %,$(BLD)/%.ress,$(ENTRIES))
+	echo $^
+
+uc: $(BLD)/$I.cs
+	$(eval args!=jq -R '{c:.}' $<)
+	$($I_c) upgrade_code '$(args)'
+
+
+$(USH)/%.man: $(TSBIN)/%.boc $(BLD)/%.abi.json
+	$(UBIN)/gosh gosh_help_data $*
+
+$(USH)/man_pages: $(patsubst %,$(USH)/%.man,$(ENTRIES))
+	jq 'add' $^ >$@
+
+cmp: $(patsubst %,$(USH)/%.man,$(ENTRIES))
+	echo $^
+	rm -f $(USH)/man_pages
+	jq 'add' $^ >$(USH)/man_pages
+
+_sc=$(shell jq -Rs '.' $1)
+_asc={"name":"$1","source":$(call _sc,$2)}
+$(BLD)/%.resc: $(BLD)/%.argsc
+#	$($I_c) update_source '$(call _asc,$*,$<)'
+	$($I_c) update_source $<
+
+$(BLD)/%.argsc: $(SRC)/%.sol
+#	$(file >$@,{"name":"$*","source":"$(file <$<)"})
+	jq -Rs '{"name":"$*","source":.}' $< >$@
+#	$(eval source!=jq -Rs '. |@sh' $<)
+#	$(eval args!=jq '{name:"$*",source:"$(source)"}' $<)
+#	$($I_c) update_source '{"name":"$*","source":$(call _sc)}' >$@
+#sc: $(patsubst %,$(BLD)/%.resc,$(ENTRIES))
+#sc: $(patsubst %,$(BLD)/%.resc,$(ENTRIES))
+sc: $(patsubst %,$(BLD)/%.resc,help)
+	echo $^
+
 $(BLD)/%.abi.json: $(SRC)/%.sol
 	$(SOLC) $< --tvm-abi -o $(BLD)
 
-tty tt: ts bocs
+$(TSBIN)/%.boc: etc/hosts
+	$(eval aa!=grep -w $* $< | cut -f 1)
+	$(TOC) account $(aa) -b $@
+
+bocs: $(patsubst %,$(TSBIN)/%.boc,$(ENTRIES))
+	@true
+
+hb:
+	$($I_r) models {} | jq -j '.out'
+
+tty tt: tx bocs
 	./$<
 .PHONY: $(PHONY)
 

@@ -68,11 +68,24 @@ contract Hold is Format {
         }
     }
 
+    function update_source(string name, string source) external accept {
+        uint index = _get_image_index(name);
+        if (index > 0) {
+            Entry img = _images[index - 1];
+            if (source != img.source) {
+                img.source = source;
+                img.updated_at = now;
+                _images[index - 1] = img;
+            }
+        }
+    }
+
     function models() external view returns (string out) {
         Column[] columns_format = [
             Column(true, 3, ALIGN_LEFT),
             Column(true, 3, ALIGN_LEFT),
             Column(true, 20, ALIGN_LEFT),
+            Column(true, 5, ALIGN_LEFT),
             Column(true, 5, ALIGN_LEFT),
             Column(true, 6, ALIGN_LEFT),
             Column(true, 5, ALIGN_LEFT),

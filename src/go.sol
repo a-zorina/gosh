@@ -6,7 +6,7 @@ struct GoshHelp {
     string synopsis;
     string description;
     string options;
-    string headers;
+    string[] headers;
     string[] contents;
     string see_also;
     string version;
@@ -228,14 +228,14 @@ abstract contract go is Base, Format {
     }
 
     function _var_ext(string name, string pool) internal pure returns (Var) {
-        string cur_record = _get_pool_record(name, pool);
+        /*string cur_record = _get_pool_record(name, pool);
         string attrs;
         string value;
         if (!cur_record.empty()) {
             (attrs, ) = _strsplit(cur_record, " ");
             (, value) = _strsplit(cur_record, "=");
         }
-        return Var(name, attrs, value, "", _get_mask_ext(attrs), IS_POOL);
+        return Var(name, attrs, value, "", _get_mask_ext(attrs), IS_POOL);*/
     }
 
     function _get_mask_ext(string s_attrs) internal pure returns (uint16 mask) {

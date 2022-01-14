@@ -111,8 +111,8 @@ $(BLD)/%.argsc: $(SRC)/%.sol
 #	$(eval args!=jq '{name:"$*",source:"$(source)"}' $<)
 #	$($I_c) update_source '{"name":"$*","source":$(call _sc)}' >$@
 #sc: $(patsubst %,$(BLD)/%.resc,$(ENTRIES))
-#sc: $(patsubst %,$(BLD)/%.resc,$(ENTRIES))
-sc: $(patsubst %,$(BLD)/%.resc,help)
+sc: $(patsubst %,$(BLD)/%.resc,$(ENTRIES))
+#sc: $(patsubst %,$(BLD)/%.resc,help)
 	echo $^
 
 $(BLD)/%.abi.json: $(SRC)/%.sol
@@ -127,6 +127,9 @@ bocs: $(patsubst %,$(TSBIN)/%.boc,$(ENTRIES))
 
 hb:
 	$($I_r) models {} | jq -j '.out'
+
+sls:
+	$($I_r) _images {} | jq -r '._images[] | .name, .source'
 
 tty tt: tx bocs
 	./$<

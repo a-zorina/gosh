@@ -4,8 +4,8 @@ import "go.sol";
 
 contract var_ is go {
 
-    function b_exec(string[] e) external pure returns (uint8 ec, string out) {
-        (string[] params, string flags, ) = _get_args(e[IS_ARGS]);
+    function b_exec(string args, string pool) external pure returns (uint8 ec, string out) {
+        (string[] params, string flags, ) = _get_args(args);
 //        string dbg = argv;
         bool function_names_only = _flag_set("F", flags);
 
@@ -18,7 +18,6 @@ contract var_ is go {
         s_attrs = "-" + (s_attrs.empty() ? "-" : s_attrs);
         bool print_reusable = _flag_set("p", flags) || function_names_only;
 
-        string pool = e[IS_POOL];
         if (params.empty()) {
             (string[] lines, ) = _split(pool, "\n");
             for (string line: lines) {
@@ -42,12 +41,8 @@ contract var_ is go {
             }
         } else {
             for (string p: params)
-                pool = _set_var(s_attrs, p, pool);
+                out = _set_var(s_attrs, p, pool);
         }
-//        if (pool != e[IS_POOL])
-//            wr.push(Write(IS_POOL, pool, O_WRONLY));
-
-//        wr.push(Write(IS_STDERR, dbg, O_WRONLY + O_APPEND));
     }
 
     function _gosh_help_data() internal pure override returns (GoshHelp) {

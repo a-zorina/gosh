@@ -83,12 +83,12 @@ contract Hold is Format {
     function models() external view returns (string out) {
         Column[] columns_format = [
             Column(true, 3, ALIGN_LEFT),
-            Column(true, 3, ALIGN_LEFT),
-            Column(true, 20, ALIGN_LEFT),
-            Column(true, 5, ALIGN_LEFT),
-            Column(true, 5, ALIGN_LEFT),
-            Column(true, 6, ALIGN_LEFT),
-            Column(true, 5, ALIGN_LEFT),
+            Column(true, 3, ALIGN_RIGHT),
+            Column(true, 20, ALIGN_RIGHT),
+            Column(true, 6, ALIGN_RIGHT),
+            Column(true, 5, ALIGN_RIGHT),
+            Column(true, 6, ALIGN_RIGHT),
+            Column(true, 5, ALIGN_RIGHT),
             Column(true, 30, ALIGN_LEFT),
             Column(true, 66, ALIGN_LEFT)];
 

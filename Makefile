@@ -86,7 +86,6 @@ uc: $(BLD)/$I.cs
 	$(eval args!=jq -R '{c:.}' $<)
 	$($I_c) upgrade_code '$(args)'
 
-
 $(USH)/%.man: $(TSBIN)/%.boc $(BLD)/%.abi.json
 	$(UBIN)/gosh gosh_help_data $*
 
@@ -101,16 +100,10 @@ cmp: $(patsubst %,$(USH)/%.man,$(ENTRIES))
 _sc=$(shell jq -Rs '.' $1)
 _asc={"name":"$1","source":$(call _sc,$2)}
 $(BLD)/%.resc: $(BLD)/%.argsc
-#	$($I_c) update_source '$(call _asc,$*,$<)'
 	$($I_c) update_source $<
 
 $(BLD)/%.argsc: $(SRC)/%.sol
-#	$(file >$@,{"name":"$*","source":"$(file <$<)"})
 	jq -Rs '{"name":"$*","source":.}' $< >$@
-#	$(eval source!=jq -Rs '. |@sh' $<)
-#	$(eval args!=jq '{name:"$*",source:"$(source)"}' $<)
-#	$($I_c) update_source '{"name":"$*","source":$(call _sc)}' >$@
-#sc: $(patsubst %,$(BLD)/%.resc,$(ENTRIES))
 sc: $(patsubst %,$(BLD)/%.resc,$(ENTRIES))
 #sc: $(patsubst %,$(BLD)/%.resc,help)
 	echo $^

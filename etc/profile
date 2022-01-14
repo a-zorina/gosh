@@ -1,0 +1,1 @@
+[-]="himBHs" [GOSH]="./gosh" [GOSHOPTS]=( expand_aliases ) [GOSHPID] [GOSH_SUBSHELL]="0" [GOSH_ALIASES]=( ) [SHELLOPTS]="allexport:hashall" [TMPDIR]="tmp" [SHLVL]="1"

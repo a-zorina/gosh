@@ -1,0 +1,6 @@
+#!/bin/sh
+
+/usr/src/git/ci/run-docker-build.sh
+
+ssh-keygen -A
+exec /usr/sbin/sshd -D -e "$@"

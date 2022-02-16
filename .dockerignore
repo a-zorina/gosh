@@ -1,6 +1,7 @@
+.git/
 Dockerfile
 RelNotes
-.depend/
+**/.depend/
 *.swp
 *.o
 bin-wrappers/

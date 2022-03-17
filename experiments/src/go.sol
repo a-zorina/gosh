@@ -1,4 +1,7 @@
 pragma ton-solidity >= 0.54.0;
+import "sys/stypes.sol";
+import "sys/io.sol";
+import "sys/xio.sol";
 
 struct GoshHelp {
     string name;
@@ -16,6 +19,8 @@ import "../lib/Format.sol";
 import "../include/Base.sol";
 
 abstract contract go is Base, Format {
+
+    using io for s_proc;
 
     function _fetch_value(string key, uint16 delimiter, string page) internal pure returns (string value) {
         string key_pattern = _wrap(key, W_SQUARE);

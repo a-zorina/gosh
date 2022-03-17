@@ -4,19 +4,22 @@ import "go.sol";
 
 contract gosh is go {
 
-    function on_exec(uint8 ec, string out, string[] e) external pure returns (string[] env) {
+    function on_exec(s_proc p_in, uint8 ec, string out, string[] e) external pure returns (s_proc p, string[] env) {
+        p = p_in;
         env = e;
         string dbg;
 
-        env[IS_STDOUT].append(out);
-        string exec_line = e[IS_PIPELINE];
+//        env[IS_STDOUT].append(out);
+        p.puts(out);
+        string exec_line;// = e[IS_PIPELINE];
         if (ec > EXECUTE_SUCCESS)
             dbg.append("Executed " + exec_line + " with status " + format("{}", ec) + "\n");
 
-        env[IS_STDERR].append(dbg);
+        p.puts(dbg);
+//        env[IS_STDERR].append(dbg);
     }
 
-    function read_line(string args, string[] e) external pure returns (string[] env) {
+    /*function read_line(string args, string[] e) external pure returns (string[] env) {
         env = e;
         string s_input = _trim_spaces(args);
         delete env[IS_STDOUT];
@@ -26,7 +29,7 @@ contract gosh is go {
         dbg.append(s_input + "\n");
 
         env[IS_STDERR].append(dbg);
-    }
+    }*/
 
     function set_args(string s_input, string opt_string, string pool) external pure returns (uint8 ec, string out) {
         (ec, out) = _set_args(s_input, opt_string, pool);

@@ -3,6 +3,7 @@ include Makefile.common
 
 # Contracts
 I:=Hold
+H:=hive
 PRIME:=$I
 
 INIT:=$(PRIME)
@@ -13,7 +14,9 @@ VAL0:=15
 TSBIN:=bin
 USH:=usr/share
 UBIN:=.
-ENTRIES:=gosh help type var
+S0:=sb0
+ENTRIES:=gosh help type var hive
+STORES:=$(S0)
 #DIRS:=
 
 PHONY += all dirs cc tty tt deploy clean
@@ -25,7 +28,7 @@ dirs:
 install: dirs cc hosts
 	@$(TOC) config --url gql.custler.net
 
-cc: $(patsubst %,$(BLD)/%.cs,$(ENTRIES) $(INIT))
+cc: $(patsubst %,$(BLD)/%.cs,$(ENTRIES) $(INIT) $(STORES))
 	@true
 
 DEPLOYED=$(patsubst %,$(BLD)/%.deployed,$(INIT))
@@ -67,10 +70,30 @@ $$(eval $1_r=$(TOC) -j run $$($1_a) --abi $(BLD)/$1.abi.json)
 $$(eval $1_c=$(TOC) call $$($1_a) --abi $(BLD)/$1.abi.json)
 endef
 
-$(foreach c,$(INIT),$(eval $(call t-call,$c)))
+$(foreach c,$(INIT) $H,$(eval $(call t-call,$c)))
+
+#$1_a=$$(shell grep -F " $$(subst sb,,$1) " etc/store | cut -f 3 -d ' ')
+define s-call
+$1_a=$$(shell tail -1 etc/store | cut -f 3 -d ' ')
+$$(eval $1_r=$(TOC) -j run $$($1_a) --abi $(BLD)/$1.abi.json)
+$$(eval $1_c=$(TOC) call $$($1_a) --abi $(BLD)/$1.abi.json)
+endef
+
+$(foreach c,$(STORES),$(eval $(call s-call,$c)))
 
 etc/hosts:
 	$($I_r) etc_hosts {} | jq -j '.out' | sed 's/ *$$//' >$@
+lmo:
+	$($H_r) models {} | jq -j '.out'
+etc/lmo:
+	$($H_r) models {} | jq -j '.out' >$@
+live:
+	$($H_r) live_hosts {} | jq -j '.out'
+etc/store:
+	$($H_r) live_hosts {} | jq -j '.out' >$@
+store:
+	rm -f etc/store
+	make etc/store
 hosts:
 	rm -f etc/hosts
 	make etc/hosts
@@ -79,8 +102,39 @@ $(BLD)/%.ress: $(BLD)/%.cs
 	$(eval args!=jq -R '{name:"$*",c:.}' $<)
 	$($I_c) update_model '$(args)' >$@
 	rm -f $(TSBIN)/$*.boc
+
+$(BLD)/%.resh: $(BLD)/%.cs
+	$(eval index!=grep -w $* etc/lmo | cut -d ' ' -f 1)
+	$(eval args!=jq -R '{index:$(index),name:"$*",c:.}' $<)
+	$($H_c) update_model_at_index '$(args)' >$@
+	rm -f $(BIN)/$*.boc
+
 ss: $(patsubst %,$(BLD)/%.ress,$(ENTRIES))
 	echo $^
+
+sh: $(patsubst %,$(BLD)/%.resh,$(STORES))
+	echo $^
+
+name?=
+s_add: $(BLD)/$(name).cs
+	$(eval args!=jq -R '{index:0,name:"$(name)",c:.}' $<)
+	$($I_c) update_model_at_index '$(args)' >$@
+h_add: $(BLD)/$(name).cs
+	$(eval args!=jq -R '{index:0,name:"$(name)",c:.}' $<)
+	$($H_c) update_model_at_index '$(args)' >$@
+k?=1
+n?=1
+h:
+	$($H_c) spawn '{"k":$k,"n":$n}'
+
+stb:
+	$(eval args!=jq -n '{"b":{"obj":{"parsed":0,"otype":0,"flags":0,"oid":{"hash":"0d0a","algo":1},"short_blob":"bb","store_link":"aa"}}}')
+	$($(S0)_c) store_blob '$(args)'
+
+_sha1=$(shell sha1sum $1 | cut -f 1 -d ' ')
+sts_%: $(SRC)/%.sol
+	$(eval args!=jq -n '{"b":{"obj":{"parsed":0,"otype":0,"flags":0,"oid":{"hash":"$(call _sha1,$<)","algo":1},"short_blob":"$(call _hex2,$<)","store_link":"$<"}}}')
+	$($(S0)_c) store_blob '$(args)'
 
 uc: $(BLD)/$I.cs
 	$(eval args!=jq -R '{c:.}' $<)
@@ -118,7 +172,7 @@ $(TSBIN)/%.boc: etc/hosts
 bocs: $(patsubst %,$(TSBIN)/%.boc,$(ENTRIES))
 	@true
 
-hb:
+report:
 	$($I_r) models {} | jq -j '.out'
 
 sls:

@@ -7,28 +7,47 @@ enum whence { OI_CACHED, OI_LOOSE, OI_PACKED, OI_DBCACHED }
 enum object_type { OBJ_NONE, OBJ_COMMIT, OBJ_TREE, OBJ_BLOB, OBJ_TAG, OBJ_BAD, OBJ_OFS_DELTA, OBJ_REF_DELTA, OBJ_ANY, OBJ_MAX }
 enum cb_next { CB_CONTINUE, CB_BREAK }
 enum remotes { REMOTE_UNCONFIGURED, REMOTE_CONFIG, REMOTE_REMOTES, REMOTE_BRANCHES }
+enum lookup_type { lookup_name, lookup_path }
+enum attr_match_mode { MATCH_SET, MATCH_UNSET, MATCH_VALUE, MATCH_UNSPECIFIED }
+enum ps_skip_worktree_action { PS_HEED_SKIP_WORKTREE, PS_IGNORE_SKIP_WORKTREE }
+enum branch_track { BRANCH_TRACK_NEVER, BRANCH_TRACK_REMOTE, BRANCH_TRACK_ALWAYS, BRANCH_TRACK_EXPLICIT, BRANCH_TRACK_OVERRIDE, BRANCH_TRACK_INHERIT }
+enum git_attr_direction { GIT_ATTR_CHECKIN, GIT_ATTR_CHECKOUT, GIT_ATTR_INDEX }
+enum sharedrepo { PERM_UMASK, OLD_PERM_GROUP, OLD_PERM_EVERYBODY, PERM_GROUP, PERM_EVERYBODY }
+enum scld_error { SCLD_OK, SCLD_FAILED, SCLD_PERMS, SCLD_EXISTS, SCLD_VANISHED }
+enum unpack_loose_header_result { ULHR_OK, ULHR_BAD, ULHR_TOO_LONG }
+enum date_mode_type { DATE_NORMAL, DATE_HUMAN, DATE_RELATIVE, DATE_SHORT, DATE_ISO8601, DATE_ISO8601_STRICT, DATE_RFC2822, DATE_STRFTIME, DATE_RAW, DATE_UNIX }
+enum want_ident { WANT_BLANK_IDENT, WANT_AUTHOR_IDENT, WANT_COMMITTER_IDENT }
+enum log_refs_config { LOG_REFS_NONE, LOG_REFS_NORMAL, LOG_REFS_ALWAYS }
+enum rebase_setup_type { AUTOREBASE_NEVER, AUTOREBASE_LOCAL, AUTOREBASE_REMOTE, AUTOREBASE_ALWAYS }
+enum push_default_type { PUSH_DEFAULT_NOTHING, PUSH_DEFAULT_MATCHING, PUSH_DEFAULT_SIMPLE, PUSH_DEFAULT_UPSTREAM, PUSH_DEFAULT_CURRENT, PUSH_DEFAULT_UNSPECIFIED }
+enum object_creation_mode { OBJECT_CREATION_USES_HARDLINKS, OBJECT_CREATION_USES_RENAMES }
+enum get_oid_result { FOUND, MISSING_OBJECT, SHORT_NAME_AMBIGUOUS, DANGLING_SYMLINK, SYMLINK_LOOP, NOT_DIR } 
 
 struct object_list {
     object item;
     object next;
 }
+
 struct object_array_entry {
     object item;
     string name; // name or NULL.  If non-NULL, the memory pointed to is owned by this object *except* if it points at object_array_slopbuf, which is a static copy of the empty string.
     string path;
     uint16 mode;
 }
+
 struct object_array {
     uint16 nr;
     uint16 alloc;
     object_array_entry objects;
 }
+
 struct object_id {
-    string hash; // [GIT_MAX_RAWSZ];
-    uint8 algo;    // XXX requires 4-byte alignment
+    bytes20 hash;   // [GIT_MAX_RAWSZ];
+    uint8 algo;     // XXX requires 4-byte alignment
 }
+
 struct object {
-    uint32 flags; // bool parsed; uint8 otype; uint32 flags
+    uint32 flags; // bool parsed; uint8 otype; uint28 flags
     object_id oid;
 }
 
@@ -94,7 +113,7 @@ struct packed_git {
     uint16 index_version;
     uint32 mtime;
     uint16 pack_fd;
-    uint16 index;              /* for builtin/pack-objects.c */
+    uint16 index;   // for builtin/pack-objects.c
     bool pack_local;
     bool pack_keep;
     bool pack_keep_in_core;
@@ -102,12 +121,12 @@ struct packed_git {
     bool do_not_close;
     bool pack_promisor;
     bool multi_pack_index;
-    string hash; //[GIT_MAX_RAWSZ];
+    bytes20 hash;    //[GIT_MAX_RAWSZ];
     revindex_entry revindex;
     uint32 revindex_data;
     uint32 revindex_map;
     uint32 revindex_size;
-    string pack_name; // something like ".git/objects/pack/xxxxx.pack" */
+    string pack_name; // something like ".git/objects/pack/xxxxx.pack"
 }
 
 struct path_cache {
@@ -135,20 +154,20 @@ struct cache_entry {
     uint16 ce_flags;
     uint16 mem_pool_allocated;
     uint16 ce_namelen;
-    uint16 index;     /* for link extension */
+    uint16 index;     // for link extension
     object_id oid;
-    string name; // [FLEX_ARRAY]; /* more */
+    string name; // [FLEX_ARRAY]; more
 }
 
 struct cache_tree_sub {
-    uint16 count;              /* internally used by update_one() */
+    uint16 count;   // internally used by update_one()
     uint16 namelen;
     uint16 used;
-    string name; //[FLEX_ARRAY];
+    string name;    //[FLEX_ARRAY];
 }
 
 struct cache_tree {
-    uint16 entry_count; /* negative means "invalid" */
+    int16 entry_count; // negative means "invalid"
     object_id oid;
     uint16 subtree_nr;
     uint16 subtree_alloc;
@@ -221,12 +240,6 @@ struct configset_list_item {
     uint16 value_index;
 }
 
-/*
- * the contents of the list are ordered according to their
- * position in the config files and order of parsing the files.
- * (i.e. key-value pair at the last position of .git/config will
- * be at the last item of the list)
- */
 struct configset_list {
     configset_list_item[] items;
     uint16 nr;
@@ -263,19 +276,9 @@ struct ref_storage_be {
 	uint32 reflog_expire;
 }
 
-/*
- * A representation of the reference store for the main repository or
- * a submodule. The ref_store instances for submodules are kept in a
- * hash map; see get_submodule_ref_store() for more info.
- */
 struct ref_store {
-	/* The backend describing this ref_store's storage scheme: */
-	ref_storage_be be;
-	/*
-	 * The gitdir that this ref_store applies to. Note that this is not
-	 * necessarily repo->gitdir if the repo has multiple worktrees.
-	 */
-	string gitdir;
+	ref_storage_be be; 	// The backend describing this ref_store's storage scheme:
+	string gitdir;      // The gitdir that this ref_store applies to. Note that this is not necessarily repo->gitdir if the repo has multiple worktrees.
 }
 
 struct submodule_cache {
@@ -293,21 +296,14 @@ struct submodule {
     string ignore;
     string branch;
 //    struct submodule_update_strategy update_strategy;
-    object_id gitmodules_oid; /* the object id of the responsible .gitmodules file */
+    object_id gitmodules_oid; // the object id of the responsible .gitmodules file
     bool recommend_shallow;
 }
-/*
- * thin wrapper struct needed to insert 'struct submodule' entries to
- * the hashmap
- */
+
+// thin wrapper struct needed to insert 'struct submodule' entries to the hashmap
 struct submodule_entry {
     hashmap_entry ent;
     submodule config;
-}
-
-enum lookup_type {
-        lookup_name,
-        lookup_path
 }
 
 struct promisor_remote {
@@ -336,7 +332,7 @@ struct repository {
 	submodule_cache ssubmodule_cache;
 	index_state index;
 	remote_state rremote_state;
-	git_hash_algo hash_algo;
+	uint8 hash_algo;
 	uint16 trace2_repo_id;
 	bool commit_graph_disabled;
 	string repository_format_partial_clone;
@@ -344,10 +340,109 @@ struct repository {
 	bool different_commondir;
 }
 
-/*
- * Define a custom repository layout. Any field can be NULL, which
- * will default back to the path according to the default layout.
- */
+struct attr_match {
+    string value;
+    attr_match_mode match_mode;
+}
+
+struct git_attr {
+    uint16 attr_nr; // unique attribute number
+    string name; // [FLEX_ARRAY]; attribute name
+}
+
+struct attr_check_item {
+    git_attr attr;
+    string value;
+}
+
+ // This structure represents a collection of `attr_check_item`. It is passed to `git_check_attr()` function, specifying the attributes to check, and
+ // receives their values.
+struct attr_check {
+    uint16 nr;
+    uint16 alloc;
+    attr_check_item[] items;
+    uint16 all_attrs_nr;
+    all_attrs_item all_attrs;
+    attr_stack stack;
+}
+
+struct all_attrs_item {
+    git_attr attr;
+    string value;
+    match_attr mmacro; // If 'macro' is non-NULL, indicates that 'attr' is a macro based on the current attribute stack and contains a pointer to the match_attr definition of the macro
+}
+
+struct check_vector {
+    uint16 nr;
+    uint16 alloc;
+    attr_check[] checks;
+    uint16 mutex;
+}
+
+struct attr_hashmap {
+    hashmap map;
+    uint16 mutex;
+}
+
+struct attr_hash_entry {
+    hashmap_entry ent;
+    string key;     // the key; memory should be owned by value
+    uint16 keylen;  // length of the key
+    bytes value;    // the stored value
+}
+
+struct attr_state {
+    git_attr[] attr;
+    string setto;
+}
+
+struct pattern {
+    string ppattern;
+    uint16 patternlen;
+    uint16 nowildcardlen;
+    uint16 flags;         // PATTERN_FLAG_*
+}
+
+struct match_attr {
+    pattern pat;    // union start
+    git_attr attr;  // union end
+    bool is_macro;
+    uint16 num_attr;
+    attr_state[] state; //[FLEX_ARRAY];
+}
+
+struct attr_stack {
+    string origin;
+    uint16 originlen;
+    uint16 num_matches;
+    uint16 alloc;
+    match_attr[] attrs;
+}
+
+struct pathspec_item {
+    string mmatch;
+    string original;
+    uint16 magic;
+    uint16 len;
+    uint16 prefix;
+    uint16 nowildcard_len;
+    uint16 flags;
+    uint16 attr_match_nr;
+    attr_match aattr_match;
+    attr_check aattr_check;
+}
+
+struct pathspec {
+    uint16 nr;
+    bool has_wildcard;
+    bool recursive;
+    bool recurse_submodules;
+    uint16 magic;
+    uint16 max_depth;
+    pathspec_item[] items;
+}
+
+// Define a custom repository layout. Any field can be NULL, which will default back to the path according to the default layout.
 struct set_gitdir_args {
 	string commondir;
 	string object_dir;
@@ -358,20 +453,13 @@ struct set_gitdir_args {
 }
 
 struct object_directory {
-	/*
-	 * Used to store the results of readdir(3) calls when we are OK
-	 * sacrificing accuracy due to races for speed. That includes
-	 * object existence with OBJECT_INFO_QUICK, as well as
-	 * our search for unique abbreviated hashes. Don't use it for tasks
-	 * requiring greater accuracy!
-	 *
-	 * Be sure to call odb_load_loose_cache() before using.
-	 */
+	// Used to store the results of readdir(3) calls when we are OK sacrificing accuracy due to races for speed. That includes object existence with OBJECT_INFO_QUICK, as well as
+	// our search for unique abbreviated hashes. Don't use it for tasks requiring greater accuracy! Be sure to call odb_load_loose_cache() before using.
 	uint32[8] loose_objects_subdir_seen; // 256 bits
 	oidtree[] loose_objects_cache;
-    bool disable_ref_updates; // This is a temporary object store created by the tmp_objdir facility. Disable ref updates since the objects in the store might be discarded on rollback.
-	bool will_destroy; // This object store is ephemeral, so there is no need to fsync.
-	string path; // Path to the alternative object store. If this is a relative path, it is relative to the current working directory.
+    bool disable_ref_updates;   // This is a temporary object store created by the tmp_objdir facility. Disable ref updates since the objects in the store might be discarded on rollback.
+	bool will_destroy;          // This object store is ephemeral, so there is no need to fsync.
+	string path;                // Path to the alternative object store. If this is a relative path, it is relative to the current working directory.
 }
 
 struct kept_pack_cache {
@@ -380,62 +468,47 @@ struct kept_pack_cache {
 }
 
 struct raw_object_store {
-	/*
-	 * Set of all object directories; the main directory is first (and
-	 * cannot be NULL after initialization). Subsequent directories are
-	 * alternates.
-	 */
-	object_directory odb;
+	object_directory odb;               // Set of all object directories; the main directory is first (and cannot be NULL after initialization). Subsequent directories are alternates.
 	object_directory[] odb_tail;
 //	kh_odb_path_map_t *odb_by_path;
 	bool loaded_alternates;
-
-	/*
-	 * A list of alternate object directories loaded from the environment;
-	 * this should not generally need to be accessed directly, but will
-	 * populate the "odb" list when prepare_alt_odb() is run.
-	 */
-	string alternate_db;
-	oidmap replace_map; // Objects that should be substituted by other objects (see git-replace(1)).
+	string alternate_db;                // A list of alternate object directories loaded from the environment; this should not generally need to be accessed directly, but will populate the "odb" list when prepare_alt_odb() is run.
+	oidmap replace_map;                 // Objects that should be substituted by other objects (see git-replace(1)).
 	bool replace_map_initialized;
-	uint16 replace_mutex; /* protect object replace functions */
+	uint16 replace_mutex;               // protect object replace functions
 //	struct commit_graph *commit_graph;
-	bool commit_graph_attempted; /* if loading has been attempted */
+	bool commit_graph_attempted;        // if loading has been attempted
 	multi_pack_index mmulti_pack_index; // private data should only be accessed directly by packfile.c and midx.c
-	packed_git ppacked_git; 	// private data. should only be accessed directly by packfile.c
-	uint16[] packed_git_mru; /* A most-recently-used ordered version of the packed_git list. */
+	packed_git ppacked_git; 	        // private data. should only be accessed directly by packfile.c
+	uint16[] packed_git_mru;            // A most-recently-used ordered version of the packed_git list
     kept_pack_cache ekept_pack_cache;
-	hashmap pack_map; 	 // A map of packfiles to packed_git structs for tracking which packs have been loaded already.
-	uint32 approximate_object_count; // A fast, rough count of the number of objects in the repository. These two fields are not meant for direct access. Use approximate_object_count() instead.
+	hashmap pack_map; 	                // A map of packfiles to packed_git structs for tracking which packs have been loaded already.
+	uint32 approximate_object_count;    // A fast, rough count of the number of objects in the repository. These two fields are not meant for direct access. Use approximate_object_count() instead.
 	bool approximate_object_count_valid;
-	bool packed_git_initialized; // Whether packed_git has already been populated with this repository's packs.
+	bool packed_git_initialized;        // Whether packed_git has already been populated with this repository's packs.
 }
 
 struct multi_pack_index {
 	string data;
 	uint32 data_len;
-
 	uint32[] revindex_data;
 	uint32[] revindex_map;
 	uint32 revindex_len;
-
 	uint32 signature;
 	uint8 version;
 	uint8 hash_len;
 	uint8 num_chunks;
 	uint32 num_packs;
 	uint32 num_objects;
-
 	bool local;
 	string chunk_pack_names;
 	uint32 chunk_oid_fanout;
 	string chunk_oid_lookup;
 	string chunk_object_offsets;
 	string chunk_large_offsets;
-
 	string[] pack_names;
 	packed_git[] packs;
-	string object_dir;//[FLEX_ARRAY];
+	string object_dir;  //[FLEX_ARRAY];
 }
 
 struct packed {
@@ -445,13 +518,13 @@ struct packed {
 }
 
 struct object_info {
-	object_type typep; /* Request */
+	object_type typep; // Request
 	uint32 sizep;
 	uint32 disk_sizep;
 	object_id delta_base_oid;
 	strbuf type_name;
 	bytes[] contentp;
-    whence ewhence; 	/* Response */
+    whence ewhence; 	// Response
     packed u;
 }
 
@@ -466,8 +539,8 @@ struct alloc_state {
 
 struct commit_graft {
 	object_id oid;
-	int16 nr_parent; /* < 0 if shallow commit */
-	object_id[] parent; /* FLEX_ARRAY more */
+	int16 nr_parent;    // < 0 if shallow commit
+	object_id[] parent; // FLEX_ARRAY more
 }
 
 struct cache_time {
@@ -499,14 +572,12 @@ struct parsed_object_pool {
 	object[] obj_hash;
 	uint16 nr_objs;
     uint16 obj_hash_size;
-	/* TODO: migrate alloc_states to mem-pool? */
-	alloc_state blob_state;
+    alloc_state blob_state; // TODO: migrate alloc_states to mem-pool?
 	alloc_state tree_state;
 	alloc_state commit_state;
 	alloc_state tag_state;
 	alloc_state object_state;
-	/* parent substitutions from .git/info/grafts and .git/shallow */
-	commit_graft[] grafts;
+	commit_graft[] grafts; 	// parent substitutions from .git/info/grafts and .git/shallow
 	uint16 grafts_alloc;
     uint16 grafts_nr;
 	bool is_shallow;
@@ -519,7 +590,7 @@ struct parsed_object_pool {
 }
 
 struct oidmap_entry {
-	hashmap_entry internal_entry; /* For internal use only */
+	hashmap_entry internal_entry; // For internal use only
 	object_id oid;
 }
 
@@ -544,7 +615,7 @@ struct cb_node {
     uint16[2] child;
     uint32 xbyte; // n.b. uint32_t for `byte' is excessive for OIDs, we may consider shorter variants if nothing else gets stored.
     uint8 otherbits;
-    uint8[] k; // FLEX_ARRAY arbitrary data, unaligned */
+    uint8[] k; // FLEX_ARRAY arbitrary data, unaligned
 }
 
 struct cb_tree {
@@ -555,17 +626,13 @@ struct mp_block {
     uint16 next_block;
     string next_free;
     string end;
-    uint16[] space; /* FLEX_ARRAY more */
+    uint16[] space; // FLEX_ARRAY more
 }
 
 struct mem_pool {
     mp_block[] mp_blocks;
-    /*
-     * The amount of available memory to grow the pool by.
-     * This size does not include the overhead for the mp_block.
-     */
-    uint32 block_alloc;
-    uint32 pool_alloc; /* The total amount of memory allocated by the pool. */
+    uint32 block_alloc; // The amount of available memory to grow the pool by. This size does not include the overhead for the mp_block.
+    uint32 pool_alloc; // The total amount of memory allocated by the pool.
 }
 
 struct oidtree {
@@ -608,3 +675,70 @@ struct hashmap_iter {
 	hashmap_entry next;
 	uint32 tablepos;
 }
+
+struct lock_file {
+    tempfile ttempfile;
+}
+
+struct tempfile {
+    uint16 active;
+    uint16 fd;
+//    s_of fp;
+    uint16 owner;
+    strbuf filename;
+}
+
+struct startup_info {
+    bool have_repository;
+    string prefix;
+    string original_cwd;
+}
+
+struct cache_def {
+    strbuf path;
+    uint16 flags;
+    uint16 track_flags;
+    uint16 prefix_len_stat_func;
+}
+
+struct ident_split {
+    string name_begin;
+    string name_end;
+    string mail_begin;
+    string mail_end;
+    string date_begin;
+    string date_end;
+    string tz_begin;
+    string tz_end;
+}
+
+struct date_mode {
+    date_mode_type dtype;
+    string strftime_fmt;
+    int local;
+}
+
+struct repository_format {
+    int16 version;
+    bool precious_objects;
+    string partial_clone; // value of extensions.partialclone
+    uint16 worktree_config;
+    int16 is_bare;
+    uint8 hash_algo;
+    bool sparse_index;
+    string work_tree;
+    string[] unknown_extensions;
+    string[] v1_only_extensions;
+}
+
+struct object_context {
+    uint16 mode;
+    strbuf symlink_path;
+    string path;
+}
+
+struct interpret_branch_name_options {
+    uint16 allowed;
+    bool nonfatal_dangling_mark;
+}
+

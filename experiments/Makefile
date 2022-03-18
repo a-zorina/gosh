@@ -15,7 +15,7 @@ TSBIN:=bin
 USH:=usr/share
 UBIN:=.
 S0:=sb0
-ENTRIES:=gosh help type var hive object
+ENTRIES:=gosh help type var hive repository
 STORES:=$(S0)
 #DIRS:=
 

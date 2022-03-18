@@ -92,12 +92,24 @@ library libstatmode {
         return (imode & S_IFMT) == S_IFCHR;
     }
 
+    function S_ISREG(uint16 imode) internal returns (bool) {
+        return (imode & S_IFMT) == S_IFREG;
+    }
+
     function is_reg(uint16 imode) internal returns (bool) {
         return (imode & S_IFMT) == S_IFREG;
     }
 
+    function S_ISDIR(uint16 imode) internal returns (bool) {
+        return (imode & S_IFMT) == S_IFDIR;
+    }
+
     function is_dir(uint16 imode) internal returns (bool) {
         return (imode & S_IFMT) == S_IFDIR;
+    }
+
+    function S_ISLNK(uint16 imode) internal returns (bool) {
+        return (imode & S_IFMT) == S_IFLNK;
     }
 
     function is_symlink(uint16 imode) internal returns (bool) {

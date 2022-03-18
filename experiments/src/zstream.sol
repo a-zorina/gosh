@@ -1,5 +1,5 @@
 pragma ton-solidity >= 0.58.0;
-import "sys/gtypes.sol";
+import "gtypes.sol";
 struct git_zstream {
 //    z_stream z;
     uint32 avail_in;
@@ -21,5 +21,5 @@ library libgit_zstream {
     function git_deflate_abort(git_zstream) internal returns (uint8) {}
     function git_deflate_end_gently(git_zstream) internal returns (uint8) {}
     function git_deflate(git_zstream, bool flush) internal returns (uint8) {}
-    function git_deflate_bound(git_zstream, uint32) internal returns (uint32 {}
+    function git_deflate_bound(git_zstream, uint32) internal returns (uint32) {}
 }

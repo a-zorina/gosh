@@ -82,40 +82,14 @@ library libstat {
 
     function file_type(s_stat st) internal returns (uint8 ft) {
         (ft, , , , , ) = st.st_mode.mode();
-        /*uint16 m = st.st_mode & S_IFMT;
-        if (m == S_IFBLK) return FT_BLKDEV;
-        if (m == S_IFCHR) return FT_CHRDEV;
-        if (m == S_IFREG) return FT_REG_FILE;
-        if (m == S_IFDIR) return FT_DIR;
-        if (m == S_IFLNK) return FT_SYMLINK;
-        if (m == S_IFSOCK) return FT_SOCK;
-        if (m == S_IFIFO) return FT_FIFO;
-        return FT_UNKNOWN;*/
     }
 
     function vnode_type(s_stat st) internal returns (vtype vt) {
         (, vt, , , , ) = st.st_mode.mode();
-        /*uint16 m = st.st_mode & S_IFMT;
-        if (m == S_IFBLK) return vtype.VBLK;
-        if (m == S_IFCHR) return vtype.VCHR;
-        if (m == S_IFREG) return vtype.VREG;
-        if (m == S_IFDIR) return vtype.VDIR;
-        if (m == S_IFLNK) return vtype.VLNK;
-        if (m == S_IFSOCK) return vtype.VSOCK;
-        if (m == S_IFIFO) return vtype.VFIFO;
-        return vtype.VBAD;*/
     }
 
     function sign(s_stat st) internal returns (byte c) {
         (, , c, , , ) = st.st_mode.mode();
-        /*uint16 m = st.st_mode & S_IFMT;
-        if (m == S_IFBLK)  return "b";
-        if (m == S_IFCHR)  return "c";
-        if (m == S_IFREG)  return "-";
-        if (m == S_IFDIR)  return "d";
-        if (m == S_IFLNK)  return "l";
-        if (m == S_IFSOCK) return "s";
-        if (m == S_IFIFO)  return "p";*/
     }
 
     function is_block_dev(s_stat st) internal returns (bool) {

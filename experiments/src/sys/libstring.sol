@@ -154,4 +154,8 @@ library libstring {
         uint p = text.strstr(pattern);
         text = p > 0 ? text.strtok(p - 1 + pattern.byteLength(), delimiter) : "";
     }
+
+    function alt(string s1, string s2) internal returns (string) {
+        return s1.empty() ? s2 : s1;
+    }
 }

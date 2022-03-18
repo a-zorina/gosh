@@ -1,7 +1,5 @@
 pragma ton-solidity >= 0.58.0;
 
-import "sys/gtypes.sol";
-
 library lenv {
 
     string constant GIT_DIR_ENVIRONMENT                = "GIT_DIR";
@@ -44,6 +42,6 @@ library lenv {
     string constant GIT_PROTOCOL_ENVIRONMENT           = "GIT_PROTOCOL"; // Environment variable used in handshaking the wire protocol. Contains a colon ':' separated list of keys with optional values "key[=value]'.  Presence of unknown keys and values must be ignored.
     string constant GIT_PROTOCOL_HEADER                = "Git-Protocol";   // HTTP header used to handshake the wire protocol
     string constant GIT_IMPLICIT_WORK_TREE_ENVIRONMENT = "GIT_IMPLICIT_WORK_TREE"; // This environment variable is expected to contain a boolean indicating whether we should or should not treat GIT_DIR=foo.git git ... as if GIT_WORK_TREE=. was given. It's not expected that users will make use of this, but we use it internally to communicate to sub-processes that we are in a bare repo. If not set, defaults to true.
-
+    string constant ALTERNATE_DB_ENVIRONMENT           = "GIT_ALTERNATE_OBJECT_DIRECTORIES";
     function setup_git_env(string git_dir) internal {}
 }

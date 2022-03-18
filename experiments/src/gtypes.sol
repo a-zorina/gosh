@@ -42,7 +42,8 @@ struct object_array {
 }
 
 struct object_id {
-    bytes20 hash;   // [GIT_MAX_RAWSZ];
+//    bytes20 hash;   // [GIT_MAX_RAWSZ];
+    string hash;   // [GIT_MAX_RAWSZ];
     uint8 algo;     // XXX requires 4-byte alignment
 }
 
@@ -51,17 +52,30 @@ struct object {
     object_id oid;
 }
 
+struct string_list_item {
+    string sstring;
+    bytes util;
+}
+
+struct string_list {
+    string_list_item[] items;
+    uint16 nr;
+    uint16 alloc;
+    bool strdup_strings;
+    uint32 cmp; // NULL uses strcmp()
+}
+
 struct git_hash_algo {
     string name;          // The name of the algorithm, as appears in the config file and in messages.
     uint32 format_id;     // A four-byte version identifier, used in pack indices.
-    uint32 rawsz;         // The length of the hash in binary.
-    uint32 hexsz;         // The length of the hash in hex characters.
-    uint32 blksz;         // The block size of the hash.
-    uint32 init_fn;       // The hash initialization function.
+    uint8 rawsz;         // The length of the hash in binary.
+    uint8 hexsz;         // The length of the hash in hex characters.
+    uint8 blksz;         // The block size of the hash.
+    /*uint32 init_fn;       // The hash initialization function.
     uint32 clone_fn;      // The hash context cloning function.
     uint32 update_fn;     // The hash update function.
     uint32 final_fn;      // The hash finalization function.
-    uint32 final_oid_fn;  // The hash finalization function for object IDs.
+    uint32 final_oid_fn;  // The hash finalization function for object IDs.*/
     object_id empty_tree; // The OID of the empty tree.
     object_id empty_blob; // The OID of the empty blob.
     object_id null_oid;   // The all-zeros OID.
@@ -151,8 +165,8 @@ struct cache_entry {
     hashmap_entry ent;
     stat_data ce_stat_data;
     uint16 ce_mode;
-    uint16 ce_flags;
-    uint16 mem_pool_allocated;
+    uint32 ce_flags;
+    bool mem_pool_allocated;
     uint16 ce_namelen;
     uint16 index;     // for link extension
     object_id oid;
@@ -182,7 +196,7 @@ struct index_state {
     uint16 cache_changed;
     string[] resolve_undo;
     cache_tree ccache_tree;
-//    struct split_index *split_index;
+//    split_index split_index;
     cache_time timestamp;
     bool name_hash_initialized;
     bool initialized;
@@ -332,7 +346,7 @@ struct repository {
 	submodule_cache ssubmodule_cache;
 	index_state index;
 	remote_state rremote_state;
-	uint8 hash_algo;
+	git_hash_algo hash_algo;
 	uint16 trace2_repo_id;
 	bool commit_graph_disabled;
 	string repository_format_partial_clone;
@@ -472,7 +486,7 @@ struct raw_object_store {
 	object_directory[] odb_tail;
 //	kh_odb_path_map_t *odb_by_path;
 	bool loaded_alternates;
-	string alternate_db;                // A list of alternate object directories loaded from the environment; this should not generally need to be accessed directly, but will populate the "odb" list when prepare_alt_odb() is run.
+	string[] alternate_db;                // A list of alternate object directories loaded from the environment; this should not generally need to be accessed directly, but will populate the "odb" list when prepare_alt_odb() is run.
 	oidmap replace_map;                 // Objects that should be substituted by other objects (see git-replace(1)).
 	bool replace_map_initialized;
 	uint16 replace_mutex;               // protect object replace functions

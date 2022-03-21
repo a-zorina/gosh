@@ -6,7 +6,6 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"value0","type":"uint256"}
 			],
 			"outputs": [
 			]
@@ -87,7 +86,6 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
-		{"name":"pubkey","type":"uint256"},
 		{"name":"m_RepositoryCode","type":"cell"},
 		{"name":"m_RepositoryData","type":"cell"},
 		{"name":"m_BranchCode","type":"cell"},

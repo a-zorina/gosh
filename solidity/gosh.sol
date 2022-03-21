@@ -7,7 +7,6 @@ import "Upgradable.sol";
 import "repository.sol";
 
 contract Gosh is Upgradable{
-    uint256 pubkey;
     TvmCell m_RepositoryCode;
     TvmCell m_RepositoryData;
     TvmCell m_BranchCode;
@@ -20,9 +19,8 @@ contract Gosh is Upgradable{
         _;
     }
     
-    constructor(uint256 value0) public {
+    constructor() public {
         tvm.accept();
-        pubkey = value0;
     }
     
     function deployRepository(string name) view public {

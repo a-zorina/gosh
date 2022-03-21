@@ -68,6 +68,26 @@ contract Hold is Format {
         }
     }
 
+    function update_model_at_index(uint16 index, string name, TvmCell c) external accept {
+        if (index == 0) {
+            TvmCell si = tvm.buildStateInit({code: c});
+            address addr = address.makeAddrStd(0, tvm.hash(si));
+            _images.push(Entry(0, name, addr, "", c, now));
+            new Base{stateInit: si, value: 3 ton}();
+        } else {
+            Entry img = _images[index - 1];
+            (, , address addr, , TvmCell code, ) = img.unpack();
+            if (code != c) {
+                img.version++;
+                img.code = c;
+                img.updated_at = now;
+                _images[index - 1] = img;
+                if (_live_update)
+                    Base(addr).upgrade{value: 0.1 ton, flag: 1}(c);
+            }
+        }
+    }
+
     function update_source(string name, string source) external accept {
         uint index = _get_image_index(name);
         if (index > 0) {

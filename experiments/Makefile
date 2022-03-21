@@ -4,6 +4,7 @@ include Makefile.common
 # Contracts
 I:=Hold
 H:=hive
+S:=septame
 PRIME:=$I
 
 INIT:=$(PRIME)
@@ -15,8 +16,9 @@ TSBIN:=bin
 USH:=usr/share
 UBIN:=.
 S0:=sb0
-ENTRIES:=gosh help type var hive repository
-STORES:=$(S0)
+S1:=sb1
+ENTRIES:=gosh help type var hive repository septame
+STORES:=$(S0) $(S1)
 #DIRS:=
 
 PHONY += all dirs cc tty tt deploy clean
@@ -70,7 +72,7 @@ $$(eval $1_r=$(TOC) -j run $$($1_a) --abi $(BLD)/$1.abi.json)
 $$(eval $1_c=$(TOC) call $$($1_a) --abi $(BLD)/$1.abi.json)
 endef
 
-$(foreach c,$(INIT) $H,$(eval $(call t-call,$c)))
+$(foreach c,$(INIT) $H $S,$(eval $(call t-call,$c)))
 
 #$1_a=$$(shell grep -F " $$(subst sb,,$1) " etc/store | cut -f 3 -d ' ')
 define s-call
@@ -89,6 +91,8 @@ etc/lmo:
 	$($H_r) models {} | jq -j '.out' >$@
 live:
 	$($H_r) live_hosts {} | jq -j '.out'
+slive:
+	$($S_r) live_hosts {} | jq -j '.out'
 etc/store:
 	$($H_r) live_hosts {} | jq -j '.out' >$@
 store:
@@ -109,6 +113,12 @@ $(BLD)/%.resh: $(BLD)/%.cs
 	$($H_c) update_model_at_index '$(args)' >$@
 	rm -f $(BIN)/$*.boc
 
+$(BLD)/%.resd: $(BLD)/%.cs
+	$(eval index!=grep -w $* etc/lmd | cut -d ' ' -f 1)
+	$(eval args!=jq -R '{index:$(index),name:"$*",c:.}' $<)
+	$($S_c) update_model_at_index '$(args)' >$@
+	rm -f $(BIN)/$*.boc
+
 ss: $(patsubst %,$(BLD)/%.ress,$(ENTRIES))
 	echo $^
 
@@ -122,10 +132,15 @@ s_add: $(BLD)/$(name).cs
 h_add: $(BLD)/$(name).cs
 	$(eval args!=jq -R '{index:0,name:"$(name)",c:.}' $<)
 	$($H_c) update_model_at_index '$(args)' >$@
+d_add: $(BLD)/$(name).cs
+	$(eval args!=jq -R '{index:0,name:"$(name)",c:.}' $<)
+	$($S_c) update_model_at_index '$(args)' >$@
 k?=1
 n?=1
 h:
 	$($H_c) spawn '{"k":$k,"n":$n}'
+sp:
+	$($S_c) spawn '{"k":$k,"n":$n}'
 
 stb:
 	$(eval args!=jq -n '{"b":{"obj":{"parsed":0,"otype":0,"flags":0,"oid":{"hash":"0d0a","algo":1},"short_blob":"bb","store_link":"aa"}}}')
@@ -136,9 +151,21 @@ sts_%: $(SRC)/%.sol
 	$(eval args!=jq -n '{"b":{"obj":{"parsed":0,"otype":0,"flags":0,"oid":{"hash":"$(call _sha1,$<)","algo":1},"short_blob":"$(call _hex2,$<)","store_link":"$<"}}}')
 	$($(S0)_c) store_blob '$(args)'
 
+st_%: $(SRC)/sys/%.sol
+	$(eval args!=jq -Rs '{s:.}' $<)
+	$($(S1)_c) store_text '$(args)'
+#stb_%: $(BLD)/%.abi.json
+stb_%: $(BLD)/%.code
+	$(eval args!=jq -Rs '{b:"$(call _hex2,$<)"}' $<)
+	$($(S1)_c) store_data '$(args)'
+stc_%: $(BLD)/%.cs
+	$(eval args!=jq -R '{c:.}' $<)
+	$($(S1)_c) store_cell '$(args)'
 uc: $(BLD)/$I.cs
 	$(eval args!=jq -R '{c:.}' $<)
 	$($I_c) upgrade_code '$(args)'
+
+
 
 $(USH)/%.man: $(TSBIN)/%.boc $(BLD)/%.abi.json
 	$(UBIN)/gosh gosh_help_data $*

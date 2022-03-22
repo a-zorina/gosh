@@ -16,12 +16,11 @@ contract Repository is Upgradable{
     string _name;
     
     modifier onlyOwner {
-        require(msg.pubkey() == tvm.pubkey(),500);
+        require(msg.sender == _rootGosh,500);
         _;
     }
     
     constructor(uint256 value0, string name) public {
-        require(msg.pubkey() != 0, 101);
         tvm.accept();
         pubkey = value0;
         _rootGosh = msg.sender;
@@ -33,6 +32,7 @@ contract Repository is Upgradable{
         TvmBuilder b;
         b.store(address(this));
         b.store(msg.pubkey());
+        b.store(name);
         TvmCell deployCode = tvm.setCodeSalt(m_BranchCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_BranchData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());

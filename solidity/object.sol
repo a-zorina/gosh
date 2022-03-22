@@ -11,12 +11,11 @@ contract Object is Upgradable{
     string _name;
     
     modifier onlyOwner {
-        require(msg.pubkey() == tvm.pubkey(),500);
+        require(msg.sender == _rootBranch,500);
         _;
     }
     
     constructor(uint256 value0, string name) public {
-        require(msg.pubkey() != 0, 101);
         tvm.accept();
         pubkey = value0;
         _rootBranch = msg.sender;

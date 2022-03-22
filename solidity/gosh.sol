@@ -28,6 +28,7 @@ contract Gosh is Upgradable{
         TvmBuilder b;
         b.store(address(this));
         b.store(msg.pubkey());
+        b.store(name);
         TvmCell deployCode = tvm.setCodeSalt(m_RepositoryCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_RepositoryData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());

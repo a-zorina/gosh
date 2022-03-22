@@ -15,13 +15,31 @@
 		{
 			"name": "deployBranch",
 			"inputs": [
+				{"name":"newname","type":"string"},
+				{"name":"fromname","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deleteBranch",
+			"inputs": [
 				{"name":"name","type":"string"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "setBranch",
+			"name": "deployCommit",
+			"inputs": [
+				{"name":"nameBranch","type":"string"},
+				{"name":"nameCommit","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setCommit",
 			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}
@@ -30,7 +48,7 @@
 			]
 		},
 		{
-			"name": "setObject",
+			"name": "setBlob",
 			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}
@@ -39,7 +57,7 @@
 			]
 		},
 		{
-			"name": "getObjectCode",
+			"name": "getCommitCode",
 			"inputs": [
 			],
 			"outputs": [
@@ -72,11 +90,12 @@
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"pubkey","type":"uint256"},
-		{"name":"m_BranchCode","type":"cell"},
-		{"name":"m_BranchData","type":"cell"},
-		{"name":"m_ObjectCode","type":"cell"},
-		{"name":"m_ObjectData","type":"cell"},
+		{"name":"m_CommitCode","type":"cell"},
+		{"name":"m_CommitData","type":"cell"},
+		{"name":"m_BlobCode","type":"cell"},
+		{"name":"m_BlobData","type":"cell"},
 		{"name":"_rootGosh","type":"address"},
-		{"name":"_name","type":"string"}
+		{"name":"_name","type":"string"},
+		{"name":"_Branches","type":"optional(cell)"}
 	]
 }

@@ -9,10 +9,10 @@ import "repository.sol";
 contract Gosh is Upgradable{
     TvmCell m_RepositoryCode;
     TvmCell m_RepositoryData;
-    TvmCell m_BranchCode;
-    TvmCell m_BranchData;
-    TvmCell m_ObjectCode;
-    TvmCell m_ObjectData;
+    TvmCell m_CommitCode;
+    TvmCell m_CommitData;
+    TvmCell m_BlobCode;
+    TvmCell m_BlobData;
     
     modifier onlyOwner {
         require(msg.pubkey() == tvm.pubkey(),500);
@@ -25,17 +25,17 @@ contract Gosh is Upgradable{
     
     function deployRepository(string name) view public {
         require(msg.value > 1.5 ton, 100);
+        tvm.accept();
         TvmBuilder b;
         b.store(address(this));
-        b.store(msg.pubkey());
         b.store(name);
         TvmCell deployCode = tvm.setCodeSalt(m_RepositoryCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_RepositoryData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
         address addr = address.makeAddrStd(0, tvm.hash(s1));
         new Repository {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), name);
-        Repository(addr).setBranch{value: 0.2 ton}(m_BranchCode, m_BranchData);
-        Repository(addr).setObject{value: 0.2 ton}(m_ObjectCode, m_ObjectData);
+        Repository(addr).setCommit{value: 0.2 ton}(m_CommitCode, m_CommitData);
+        Repository(addr).setBlob{value: 0.2 ton}(m_BlobCode, m_BlobData);
     }
     
     function onCodeUpgrade() internal override {   
@@ -49,16 +49,16 @@ contract Gosh is Upgradable{
         m_RepositoryData = data;
     }
     
-    function setBranch(TvmCell code, TvmCell data) public  onlyOwner {
+    function setCommit(TvmCell code, TvmCell data) public  onlyOwner {
         tvm.accept();
-        m_BranchCode = code;
-        m_BranchData = data;
+        m_CommitCode = code;
+        m_CommitData = data;
     }
     
-    function setObject(TvmCell code, TvmCell data) public  onlyOwner {
+    function setBlob(TvmCell code, TvmCell data) public  onlyOwner {
         tvm.accept();
-        m_ObjectCode = code;
-        m_ObjectData = data;
+        m_BlobCode = code;
+        m_BlobData = data;
     }
     
     //Getters
@@ -67,11 +67,11 @@ contract Gosh is Upgradable{
         return m_RepositoryCode;
     }
     
-    function getBranchCode() external view returns(TvmCell) {
-        return m_BranchCode;
+    function getCommitCode() external view returns(TvmCell) {
+        return m_CommitCode;
     }
     
-    function getObjectCode() external view returns(TvmCell) {
-        return m_ObjectCode;
+    function getBlobCode() external view returns(TvmCell) {
+        return m_BlobCode;
     }
 }

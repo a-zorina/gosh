@@ -28,7 +28,7 @@
 			]
 		},
 		{
-			"name": "setBranch",
+			"name": "setCommit",
 			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}
@@ -37,7 +37,7 @@
 			]
 		},
 		{
-			"name": "setObject",
+			"name": "setBlob",
 			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}
@@ -54,7 +54,7 @@
 			]
 		},
 		{
-			"name": "getBranchCode",
+			"name": "getCommitCode",
 			"inputs": [
 			],
 			"outputs": [
@@ -62,7 +62,7 @@
 			]
 		},
 		{
-			"name": "getObjectCode",
+			"name": "getBlobCode",
 			"inputs": [
 			],
 			"outputs": [
@@ -88,9 +88,9 @@
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"m_RepositoryCode","type":"cell"},
 		{"name":"m_RepositoryData","type":"cell"},
-		{"name":"m_BranchCode","type":"cell"},
-		{"name":"m_BranchData","type":"cell"},
-		{"name":"m_ObjectCode","type":"cell"},
-		{"name":"m_ObjectData","type":"cell"}
+		{"name":"m_CommitCode","type":"cell"},
+		{"name":"m_CommitData","type":"cell"},
+		{"name":"m_BlobCode","type":"cell"},
+		{"name":"m_BlobData","type":"cell"}
 	]
 }

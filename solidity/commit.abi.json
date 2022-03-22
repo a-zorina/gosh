@@ -7,30 +7,14 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"value0","type":"uint256"},
-				{"name":"name","type":"string"}
+				{"name":"nameCommit","type":"string"},
+				{"name":"nameBranch","type":"string"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "deployBranch",
-			"inputs": [
-				{"name":"name","type":"string"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setObject",
-			"inputs": [
-				{"name":"code","type":"cell"},
-				{"name":"data","type":"cell"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "getName",
+			"name": "getNameCommit",
 			"inputs": [
 			],
 			"outputs": [
@@ -38,15 +22,15 @@
 			]
 		},
 		{
-			"name": "getObjectCode",
+			"name": "getNameBranch",
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"value0","type":"cell"}
+				{"name":"value0","type":"string"}
 			]
 		},
 		{
-			"name": "getRepoAdress",
+			"name": "getBranchAdress",
 			"inputs": [
 			],
 			"outputs": [
@@ -71,9 +55,8 @@
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"pubkey","type":"uint256"},
-		{"name":"m_ObjectCode","type":"cell"},
-		{"name":"m_ObjectData","type":"cell"},
 		{"name":"_rootRepo","type":"address"},
-		{"name":"_name","type":"string"}
+		{"name":"_nameCommit","type":"string"},
+		{"name":"_nameBranch","type":"string"}
 	]
 }

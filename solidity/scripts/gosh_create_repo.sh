@@ -24,10 +24,11 @@ if [ "$NETWORK" == "localhost" ]; then
     WALLET_KEYS=$WALLET.keys.json
     CALLED="submitTransaction {\"dest\":\"$GOSH_ADDR\",\"value\":$VALUE,\"bounce\":false,\"allBalance\":false,\"payload\":\"$PAYLOAD\"}"
     $TONOS_CLI -u $NETWORK call $WALLET_ADDR $CALLED --abi $WALLET_ABI --sign $WALLET_KEYS > /dev/null || exit 1
-    REPO_ADDR=$($TONOS_CLI -u $NETWORK run $GOSH_ADDR getAddrRepository "{\"name\":\"$1\"}" --abi $GOSH_ABI | sed -n '/value0/ p' | cut -d'"' -f 4)
+    REPO_ADDR=$($TONOS_CLI -j -u $NETWORK run $GOSH_ADDR getAddrRepository "{\"name\":\"$1\"}" --abi $GOSH_ABI | sed -n '/value0/ p' | cut -d'"' -f 4)
 else
     echo wtf?
 fi
 
-echo repo name = $1
-echo repo addr = $REPO_ADDR
+echo ===================== REPO =====================
+echo name: $1
+echo addr: $REPO_ADDR

@@ -63,6 +63,17 @@ contract Gosh is Upgradable{
     
     //Getters
     
+    function getAddrRepository(string name) external view returns(address) {
+        TvmBuilder b;
+        b.store(address(this));
+        b.store(name);
+        TvmCell deployCode = tvm.setCodeSalt(m_RepositoryCode, b.toCell());
+        TvmCell _contractflex = tvm.buildStateInit(deployCode, m_RepositoryData);
+        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
+        address addr = address.makeAddrStd(0, tvm.hash(s1));
+        return addr;
+    }
+    
     function getRepositoryCode() external view returns(TvmCell) {
         return m_RepositoryCode;
     }

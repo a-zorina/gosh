@@ -46,6 +46,15 @@
 			]
 		},
 		{
+			"name": "getAddrRepository",
+			"inputs": [
+				{"name":"name","type":"string"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
 			"name": "getRepositoryCode",
 			"inputs": [
 			],

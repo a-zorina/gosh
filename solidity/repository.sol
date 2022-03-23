@@ -31,7 +31,7 @@ contract Repository is Upgradable{
         pubkey = value0;
         _rootGosh = msg.sender;
         _name = name;
-        _Branches["master"] = (Item(name, address.makeAddrNone()));
+        _Branches["master"] = (Item("master", address.makeAddrNone()));
     }
     
     

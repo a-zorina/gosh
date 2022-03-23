@@ -57,6 +57,23 @@
 			]
 		},
 		{
+			"name": "getAddrBranch",
+			"inputs": [
+				{"name":"name","type":"string"}
+			],
+			"outputs": [
+				{"components":[{"name":"key","type":"string"},{"name":"value","type":"address"}],"name":"value0","type":"tuple"}
+			]
+		},
+		{
+			"name": "getAllAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"components":[{"name":"key","type":"string"},{"name":"value","type":"address"}],"name":"value0","type":"tuple[]"}
+			]
+		},
+		{
 			"name": "getCommitCode",
 			"inputs": [
 			],

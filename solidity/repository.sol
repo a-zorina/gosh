@@ -6,6 +6,11 @@ pragma AbiHeader pubkey;
 import "Upgradable.sol";
 import "commit.sol";
 
+struct Item {
+        string key;
+        address value;
+}
+
 contract Repository is Upgradable{
     uint256 pubkey;
     TvmCell m_CommitCode;
@@ -14,7 +19,7 @@ contract Repository is Upgradable{
     TvmCell m_BlobData;
     address _rootGosh;
     string _name;
-    mapping(string => address) _Branches;
+    mapping(string => Item) _Branches;
     
     modifier onlyOwner {
         require(msg.sender == _rootGosh,500);
@@ -26,7 +31,7 @@ contract Repository is Upgradable{
         pubkey = value0;
         _rootGosh = msg.sender;
         _name = name;
-        _Branches["master"] = address.makeAddrNone();
+        _Branches["master"] = (Item(name, address.makeAddrNone()));
     }
     
     
@@ -53,7 +58,7 @@ contract Repository is Upgradable{
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
         address addr = address.makeAddrStd(0, tvm.hash(s1));
         new Commit {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), nameCommit, nameBranch);
-        _Branches[nameBranch] = addr;
+        _Branches[nameBranch] = Item(nameBranch, addr);
     }
     
     function onCodeUpgrade() internal override {   
@@ -75,6 +80,19 @@ contract Repository is Upgradable{
     
     //Getters
     
+    function getAddrBranch(string name) external view returns(Item) {
+        return _Branches[name];
+    }
+    
+    function getAllAddress() external view returns(Item[]) {
+        Item[] AllBranches;
+        for ((string _key, Item value) : _Branches) { 
+            _key;
+            AllBranches.push(value);
+        }
+        return AllBranches;
+    }
+    
     function getCommitCode() external view returns(TvmCell) {
         return m_CommitCode;
     }
@@ -83,3 +101,4 @@ contract Repository is Upgradable{
         return _rootGosh;
     }
 }
+

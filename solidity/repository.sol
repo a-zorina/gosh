@@ -38,7 +38,7 @@ contract Repository is Upgradable{
     function deployBranch(string newname, string fromname)  public {
         require(msg.value > 0.1 ton, 100);
         if (_Branches.exists(newname)) { return; }
-        if (_Branches.exists(newname) == false) { return; }
+        if (_Branches.exists(fromname) == false) { return; }
         _Branches[newname] = _Branches[fromname];
     }
     

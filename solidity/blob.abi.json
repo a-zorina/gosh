@@ -1,0 +1,62 @@
+{
+	"ABI version": 2,
+	"version": "2.2",
+	"header": ["pubkey", "time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"value0","type":"uint256"},
+				{"name":"nameBlob","type":"string"},
+				{"name":"nameBranch","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getNameCommit",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"string"}
+			]
+		},
+		{
+			"name": "getNameBranch",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"string"}
+			]
+		},
+		{
+			"name": "getBranchAdress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
+		},
+		{
+			"name": "upgrade",
+			"inputs": [
+				{"name":"state","type":"cell"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"pubkey","type":"uint256"},
+		{"name":"_rootRepo","type":"address"},
+		{"name":"_nameBlob","type":"string"},
+		{"name":"_nameBranch","type":"string"}
+	]
+}

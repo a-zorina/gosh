@@ -17,40 +17,69 @@ tsc
 
 ## Usage
 
-### Deploy Signature
+### Sign Content
+
+Signs specified content using provided keys and deploys signature contract to the network.
 
 ```shell
-node cli sign <signer-secret> <content> --topup-amount <topup-amount> --giver-address <giver-address> --giver-secret <giver-secret>  
+cli sign [options] <secret> <content>
 ```
 
-Where:
+Arguments:
 
-- `signer-secret` secret key of the signer.
-- `content` any string that will be proofed by the signer.
-- `topup-amount` amount of the initial proof account balance that will be given from giver account.
-- `giver-address` account that will be used to topup proof account's balance.
-  Supported giver contracts are:
-  - SafeMultisigWallet
-  - SetCodeMultisigWallet
-  - GiverV2
-- `giver-secret` secret key of the giver account.
+- `secret` Signer's secret key
+- `content` Content string
 
-Expected output:
+Options:
+
+- `-n, --network <address>`        Network address(es) (default: "http://localhost")
+- `-е, --topup-amount <value>`     Topup amount (default: "1000000000")
+- `-g, --giver-address <address>`  Topup giver address
+- `-s, --giver-secret <key>`       Topup giver secret
+
+Output:
 
 - Address of proof account
 
-### Check Signature
+### Check Content Signature
 
 ```shell
-node cli check <signer-public> <content>  
+cli check [options] <public> <content>  
 ```
 
-Where:
+Verifies that specified content signed by signer with the specified public key.
 
-- `signer-public` public key of the signer.
-- `content` any string that was proofed by the signer.
+Arguments:
 
-Expected output:
+- `public` Signer's public key
+- `content` Content string
+
+Options:
+
+- `-n, --network <address>`  Network address(es) (default: "http://localhost")
+
+Output:
 
 - `true` if proof account was deployed on the network.
 - `false` if proof account wasn't deployed on the network.
+
+### Evaluate address of the Signature Account
+
+```shell
+cli addr [options] <public> <content>
+```
+
+Calculates address of the signature account for specified content and signer's public key.
+
+Arguments:
+
+- `public` Signer's public key
+- `content` Content string
+
+Options:
+
+- `-n, --network <address>` Network address(es) (default: "http://localhost")
+
+Output:
+
+- Address

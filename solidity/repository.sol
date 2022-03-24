@@ -39,7 +39,7 @@ contract Repository is Upgradable{
         require(msg.value > 0.1 ton, 100);
         if (_Branches.exists(newname)) { return; }
         if (_Branches.exists(fromname) == false) { return; }
-        _Branches[newname] = _Branches[fromname];
+        _Branches[newname] = Item(newname, _Branches[fromname].value);
     }
     
     function deleteBranch(string name) public {

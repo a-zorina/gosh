@@ -22,7 +22,7 @@ tsc
 Signs specified content using provided keys and deploys signature contract to the network.
 
 ```shell
-cli sign [options] <secret> <content>
+node cli sign [options] <secret> <content>
 ```
 
 Arguments:
@@ -32,10 +32,10 @@ Arguments:
 
 Options:
 
-- `-n, --network <address>`        Network address(es) (default: "http://localhost")
-- `-е, --topup-amount <value>`     Topup amount (default: "1000000000")
-- `-g, --giver-address <address>`  Topup giver address
-- `-s, --giver-secret <key>`       Topup giver secret
+- `-n, --network <address>` Network address(es) (default: "http://localhost")
+- `-е, --topup-amount <value>` Topup amount (default: "1000000000")
+- `-g, --giver-address <address>` Topup giver address
+- `-s, --giver-secret <key>` Topup giver secret
 
 Output:
 
@@ -44,7 +44,7 @@ Output:
 ### Check Content Signature
 
 ```shell
-cli check [options] <public> <content>  
+node cli check [options] <public> <content>
 ```
 
 Verifies that specified content signed by signer with the specified public key.
@@ -66,7 +66,7 @@ Output:
 ### Evaluate address of the Signature Account
 
 ```shell
-cli addr [options] <public> <content>
+node cli addr [options] <public> <content>
 ```
 
 Calculates address of the signature account for specified content and signer's public key.

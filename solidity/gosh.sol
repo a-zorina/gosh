@@ -7,6 +7,7 @@ import "Upgradable.sol";
 import "repository.sol";
 
 contract Gosh is Upgradable{
+    string version = "0.0.1";
     TvmCell m_RepositoryCode;
     TvmCell m_RepositoryData;
     TvmCell m_CommitCode;
@@ -31,6 +32,7 @@ contract Gosh is Upgradable{
         TvmBuilder b;
         b.store(address(this));
         b.store(name);
+        b.store(version);
         TvmCell deployCode = tvm.setCodeSalt(m_RepositoryCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_RepositoryData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());

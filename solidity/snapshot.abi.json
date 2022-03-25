@@ -7,25 +7,39 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"value0","type":"uint256"},
-				{"name":"nameBlob","type":"string"},
+				{"name":"rootrepo","type":"address"},
 				{"name":"nameBranch","type":"string"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "setBlob",
+			"name": "deployNewSnapshot",
 			"inputs": [
-				{"name":"m_parsed","type":"uint8"},
-				{"name":"m_type","type":"uint8"},
-				{"name":"m_flags","type":"uint8"},
-				{"name":"m_hash","type":"uint8[]"}
+				{"name":"name","type":"string"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "getNameBlob",
+			"name": "setSnapshot",
+			"inputs": [
+				{"name":"snaphot","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSnapshotCode",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"data","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getSnapshot",
 			"inputs": [
 			],
 			"outputs": [
@@ -41,7 +55,7 @@
 			]
 		},
 		{
-			"name": "getRepoAdress",
+			"name": "getBranchAdress",
 			"inputs": [
 			],
 			"outputs": [
@@ -65,16 +79,12 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
+		{"name":"version","type":"string"},
 		{"name":"pubkey","type":"uint256"},
 		{"name":"_rootRepo","type":"address"},
-		{"name":"_nameBlob","type":"string"},
+		{"name":"_snapshot","type":"string"},
 		{"name":"_nameBranch","type":"string"},
-		{"name":"check","type":"bool"},
-		{"name":"_parsed","type":"uint8"},
-		{"name":"_type","type":"uint8"},
-		{"name":"_flags","type":"uint8"},
-		{"name":"_hash","type":"uint8[]"},
-		{"name":"_short_blob","type":"bytes[]"},
-		{"name":"_store_link","type":"address"}
+		{"name":"m_codeSnapshot","type":"cell"},
+		{"name":"m_dataSnapshot","type":"cell"}
 	]
 }

@@ -8,19 +8,35 @@ import "Upgradable.sol";
 contract Commit is Upgradable{
     uint256 pubkey;
     address _rootRepo;
-    string _nameCommit;
+    string _nameBlob;
     string _nameBranch;
+    bool check = false;
+    
+    uint8 _parsed;
+    uint8 _type;
+    uint8 _flags;
+    uint8[28] _hash;
+    bytes[] _short_blob;
+    address _store_link;
     
     modifier onlyOwner {
-        require(msg.sender == _rootRepo,500);
+        bool checkOwn = false;
+        if (msg.sender == _rootRepo) { checkOwn = true; }    
+        if (msg.pubkey() == pubkey) { checkOwn = true; }
+        require(checkOwn ,500);
         _;
     }
     
-    constructor(uint256 value0, string nameCommit, string nameBranch) public {
+    modifier onlyFirst {
+        require(check == false,600);
+        _;
+    }
+    
+    constructor(uint256 value0, string nameBlob, string nameBranch) public {
         tvm.accept();
         pubkey = value0;
         _rootRepo = msg.sender;
-        _nameCommit = nameCommit;
+        _nameBlob = nameBlob;
         _nameBranch = nameBranch;
     }
 
@@ -29,16 +45,25 @@ contract Commit is Upgradable{
     
     //Setters
     
+    function setCommit(uint8 m_parsed, uint8 m_type, uint8 m_flags, uint8[28] m_hash) public onlyFirst {
+        tvm.accept();
+        check = true;
+        _parsed = m_parsed;
+        _type = m_type;
+        _flags = m_flags;
+        _hash = m_hash;    
+    }
+    
     //Getters
     function getNameCommit() external view returns(string) {
-        return _nameCommit;
+        return _nameBlob;
     }
 
     function getNameBranch() external view returns(string) {
         return _nameBranch;
     }
     
-    function getBranchAdress() external view returns(address) {
+    function getRepoAdress() external view returns(address) {
         return _rootRepo;
     }
 }

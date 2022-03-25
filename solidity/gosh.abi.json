@@ -46,6 +46,15 @@
 			]
 		},
 		{
+			"name": "setSnapshot",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"data","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getAddrRepository",
 			"inputs": [
 				{"name":"name","type":"string"}
@@ -100,6 +109,8 @@
 		{"name":"m_CommitCode","type":"cell"},
 		{"name":"m_CommitData","type":"cell"},
 		{"name":"m_BlobCode","type":"cell"},
-		{"name":"m_BlobData","type":"cell"}
+		{"name":"m_BlobData","type":"cell"},
+		{"name":"m_codeSnapshot","type":"cell"},
+		{"name":"m_dataSnapshot","type":"cell"}
 	]
 }

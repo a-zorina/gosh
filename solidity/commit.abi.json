@@ -7,8 +7,19 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"value0","type":"uint256"},
-				{"name":"nameCommit","type":"string"},
+				{"name":"nameBlob","type":"string"},
 				{"name":"nameBranch","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setCommit",
+			"inputs": [
+				{"name":"m_parsed","type":"uint8"},
+				{"name":"m_type","type":"uint8"},
+				{"name":"m_flags","type":"uint8"},
+				{"name":"m_hash","type":"uint8[]"}
 			],
 			"outputs": [
 			]
@@ -30,7 +41,7 @@
 			]
 		},
 		{
-			"name": "getBranchAdress",
+			"name": "getRepoAdress",
 			"inputs": [
 			],
 			"outputs": [
@@ -56,7 +67,14 @@
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"pubkey","type":"uint256"},
 		{"name":"_rootRepo","type":"address"},
-		{"name":"_nameCommit","type":"string"},
-		{"name":"_nameBranch","type":"string"}
+		{"name":"_nameBlob","type":"string"},
+		{"name":"_nameBranch","type":"string"},
+		{"name":"check","type":"bool"},
+		{"name":"_parsed","type":"uint8"},
+		{"name":"_type","type":"uint8"},
+		{"name":"_flags","type":"uint8"},
+		{"name":"_hash","type":"uint8[]"},
+		{"name":"_short_blob","type":"bytes[]"},
+		{"name":"_store_link","type":"address"}
 	]
 }

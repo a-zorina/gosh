@@ -10,9 +10,25 @@ contract Blob is Upgradable{
     address _rootRepo;
     string _nameBlob;
     string _nameBranch;
+    bool check = false;
+    
+    uint8 _parsed;
+    uint8 _type;
+    uint8 _flags;
+    uint8[28] _hash;
+    bytes[] _short_blob;
+    address _store_link;
     
     modifier onlyOwner {
-        require(msg.sender == _rootRepo,500);
+        bool checkOwn = false;
+        if (msg.sender == _rootRepo) { checkOwn = true; }    
+        if (msg.pubkey() == pubkey) { checkOwn = true; }
+        require(checkOwn ,500);
+        _;
+    }
+    
+    modifier onlyFirst {
+        require(check == false,600);
         _;
     }
     
@@ -29,8 +45,17 @@ contract Blob is Upgradable{
     
     //Setters
     
+    function setBlob(uint8 m_parsed, uint8 m_type, uint8 m_flags, uint8[28] m_hash) public onlyFirst {
+        tvm.accept();
+        check = true;
+        _parsed = m_parsed;
+        _type = m_type;
+        _flags = m_flags;
+        _hash = m_hash;    
+    }
+    
     //Getters
-    function getNameCommit() external view returns(string) {
+    function getNameBlob() external view returns(string) {
         return _nameBlob;
     }
 
@@ -38,7 +63,7 @@ contract Blob is Upgradable{
         return _nameBranch;
     }
     
-    function getBranchAdress() external view returns(address) {
+    function getRepoAdress() external view returns(address) {
         return _rootRepo;
     }
 }

@@ -19,7 +19,7 @@
 				{"name":"m_parsed","type":"uint8"},
 				{"name":"m_type","type":"uint8"},
 				{"name":"m_flags","type":"uint8"},
-				{"name":"m_hash","type":"uint8[]"}
+				{"components":[{"name":"hash","type":"string"},{"name":"algo","type":"uint8"}],"name":"m_hash","type":"tuple"}
 			],
 			"outputs": [
 			]
@@ -73,8 +73,8 @@
 		{"name":"_parsed","type":"uint8"},
 		{"name":"_type","type":"uint8"},
 		{"name":"_flags","type":"uint8"},
-		{"name":"_hash","type":"uint8[]"},
-		{"name":"_short_blob","type":"bytes[]"},
+		{"components":[{"name":"hash","type":"string"},{"name":"algo","type":"uint8"}],"name":"_hash","type":"tuple"},
+		{"name":"_short_blob","type":"string"},
 		{"name":"_store_link","type":"address"}
 	]
 }

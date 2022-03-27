@@ -41,16 +41,8 @@
 			"name": "deployCommit",
 			"inputs": [
 				{"name":"nameBranch","type":"string"},
-				{"name":"nameCommit","type":"string"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "deployBlob",
-			"inputs": [
-				{"name":"nameBranch","type":"string"},
-				{"name":"nameBlob","type":"string"}
+				{"name":"nameCommit","type":"string"},
+				{"name":"fullCommit","type":"string"}
 			],
 			"outputs": [
 			]

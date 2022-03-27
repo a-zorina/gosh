@@ -1,63 +1,25 @@
-/* Root contract of Object */
+/* Root contract of Blob */
 pragma ton-solidity >=0.54.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-import "Upgradable.sol";
-
-struct object_id {
-    string hash;   // [GIT_MAX_RAWSZ];
-    uint8 algo;    // XXX requires 4-byte alignment
-}
-
-contract Blob is Upgradable{
-    uint256 pubkey;
-    address _rootRepo;
+contract Blob{
+    string version = "0.0.1";
+    address _rootCommit;
     string _nameBlob;
     string _nameBranch;
     bool check = false;
+    string _blob;
     
-    uint8 _parsed;
-    uint8 _type;
-    uint8 _flags;
-    object_id _hash;
-    string _short_blob;
-    address _store_link;
-    
-    modifier onlyOwner {
-        bool checkOwn = false;
-        if (msg.sender == _rootRepo) { checkOwn = true; }    
-        if (msg.pubkey() == pubkey) { checkOwn = true; }
-        require(checkOwn ,500);
-        _;
-    }
-    
-    modifier onlyFirst {
-        require(check == false,600);
-        _;
-    }
-    
-    constructor(uint256 value0, string nameBlob, string nameBranch) public {
+    constructor(string nameBlob, string nameBranch, string blob) public {
         tvm.accept();
-        pubkey = value0;
-        _rootRepo = msg.sender;
-        _nameBlob = nameBlob;
+        _rootCommit = msg.sender;
         _nameBranch = nameBranch;
-    }
-
-    function onCodeUpgrade() internal override {   
+        _nameBlob = nameBlob;
+        _blob = blob;
     }
     
     //Setters
-    
-    function setBlob(uint8 m_parsed, uint8 m_type, uint8 m_flags, object_id m_hash) public onlyFirst {
-        tvm.accept();
-        check = true;
-        _parsed = m_parsed;
-        _type = m_type;
-        _flags = m_flags;
-        _hash = m_hash;    
-    }
     
     //Getters
     function getNameBlob() external view returns(string) {
@@ -68,7 +30,11 @@ contract Blob is Upgradable{
         return _nameBranch;
     }
     
-    function getRepoAdress() external view returns(address) {
-        return _rootRepo;
+    function getCommitAdress() external view returns(address) {
+        return _rootCommit;
+    }
+    
+    function getBlob() external view returns(string) {
+        return _blob;
     }
 }

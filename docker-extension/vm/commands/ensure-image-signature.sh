@@ -1,0 +1,6 @@
+#!/bin/sh
+
+IMAGE_HASH=$1
+PUBLISHER_KEY=$2
+
+

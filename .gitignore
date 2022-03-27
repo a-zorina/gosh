@@ -1,5 +1,6 @@
 .DS_Store
 /.idea/
+/.vscode/
 /content-signature/node_modules/
 /content-signature/**/*.d.ts
 /content-signature/**/*.d.ts.map
@@ -7,4 +8,3 @@
 /content-signature/**/*.js.map
 /content-signature/package-lock.json
 /content-signature/tsconfig.tsbuildinfo
-

@@ -1,0 +1,12 @@
+# syntax = buildkit-gosh
+
+apiVersion: 1
+steps:
+  - name: print date
+    run:
+      image: bash:latest
+      command: ["/usr/local/bin/bash"]
+      args:
+        - -c
+        - >-
+          (date +'%s %H:%M:%S %Z'; echo "Hi there") | tee /message.txt

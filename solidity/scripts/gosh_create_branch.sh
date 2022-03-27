@@ -33,5 +33,6 @@ else
 fi
 
 echo =================== BRANCHES ===================
-echo repo: $1
+echo gosh: $GOSH_ADDR
+echo repo: $1 \(Addr: $REPO_ADDR\)
 $TONOS_CLI -j -u $NETWORK run $REPO_ADDR getAllAddress "{}" --abi $REPO_ABI | jq -r '.value0[] | "\(.key) => \(.value)"'

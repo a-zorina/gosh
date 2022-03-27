@@ -6,41 +6,17 @@
 		{
 			"name": "constructor",
 			"inputs": [
+				{"name":"value0","type":"uint256"},
+				{"name":"rootrepo","type":"address"},
+				{"name":"nameBranch","type":"string"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "deployRepository",
+			"name": "deployNewSnapshot",
 			"inputs": [
 				{"name":"name","type":"string"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setRepository",
-			"inputs": [
-				{"name":"code","type":"cell"},
-				{"name":"data","type":"cell"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setCommit",
-			"inputs": [
-				{"name":"code","type":"cell"},
-				{"name":"data","type":"cell"}
-			],
-			"outputs": [
-			]
-		},
-		{
-			"name": "setBlob",
-			"inputs": [
-				{"name":"code","type":"cell"},
-				{"name":"data","type":"cell"}
 			],
 			"outputs": [
 			]
@@ -48,6 +24,14 @@
 		{
 			"name": "setSnapshot",
 			"inputs": [
+				{"name":"snaphot","type":"string"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setSnapshotCode",
+			"inputs": [
 				{"name":"code","type":"cell"},
 				{"name":"data","type":"cell"}
 			],
@@ -55,36 +39,27 @@
 			]
 		},
 		{
-			"name": "getAddrRepository",
+			"name": "getSnapshot",
 			"inputs": [
-				{"name":"name","type":"string"}
+			],
+			"outputs": [
+				{"name":"value0","type":"string"}
+			]
+		},
+		{
+			"name": "getNameBranch",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"string"}
+			]
+		},
+		{
+			"name": "getBranchAdress",
+			"inputs": [
 			],
 			"outputs": [
 				{"name":"value0","type":"address"}
-			]
-		},
-		{
-			"name": "getRepositoryCode",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"cell"}
-			]
-		},
-		{
-			"name": "getCommitCode",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"cell"}
-			]
-		},
-		{
-			"name": "getBlobCode",
-			"inputs": [
-			],
-			"outputs": [
-				{"name":"value0","type":"cell"}
 			]
 		},
 		{
@@ -105,12 +80,10 @@
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
 		{"name":"version","type":"string"},
-		{"name":"m_RepositoryCode","type":"cell"},
-		{"name":"m_RepositoryData","type":"cell"},
-		{"name":"m_CommitCode","type":"cell"},
-		{"name":"m_CommitData","type":"cell"},
-		{"name":"m_BlobCode","type":"cell"},
-		{"name":"m_BlobData","type":"cell"},
+		{"name":"pubkey","type":"uint256"},
+		{"name":"_rootRepo","type":"address"},
+		{"name":"_snapshot","type":"string"},
+		{"name":"_nameBranch","type":"string"},
 		{"name":"m_codeSnapshot","type":"cell"},
 		{"name":"m_dataSnapshot","type":"cell"}
 	]

@@ -14,8 +14,8 @@ export TONOS_CLI=tonos-cli
 export NETWORK=${2:-localhost}
 
 PAYLOAD=$($TONOS_CLI body --abi $GOSH_ABI deployRepository "{\"name\":\"$1\"}" | sed -n '/Message body:/ s/Message body: // p')
-TWO_EVERS=2000000000
-VALUE=$TWO_EVERS
+THREE_EVERS=3000000000
+VALUE=$THREE_EVERS
 
 if [ "$NETWORK" == "localhost" ]; then
     WALLET=wallets/localnode/SafeMultisigWallet

@@ -12,10 +12,10 @@ RUN apk --no-cache add curl coreutils docker yarn \
     ln -s /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2
 # Bind to all network interfaces so that it can be mapped to the host OS
 
-COPY --chown=root ./ui-new/ /ui-app/
+COPY --chown=root ./ui/ /ui-build/
 
 # Bundle app source code
-RUN cd /ui-app && yarn install --silent && npm run build --silent && mv /ui-app/build /ui
+RUN cd /ui-build && yarn install --silent && npm run build --silent && mv /ui-build/build /ui
 
 COPY metadata.json /
 COPY ./vm/docker-compose.yaml /

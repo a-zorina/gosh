@@ -12,7 +12,7 @@ export NETWORK=${1:-localhost}
 
 echo "[deploy $fn]"
 
-./deploy_contract.sh $fn 100000000000 || exit 1
+./deploy_contract.sh $fn 20000000000 || exit 1
 GOSH_ADDR=$(cat $fn.addr)
 
 echo "load \`repo\`-contract"

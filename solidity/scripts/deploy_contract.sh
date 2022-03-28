@@ -12,11 +12,11 @@ if [ -e $1.keys.json ]; then
 fi
 BALANCE=${2:-2000000000}
 
-echo "[$0] genaddr $1"
+echo "[$0] genaddr..."
 CONTRACT_ADDRESS=$($TONOS_CLI genaddr $1.tvc $1.abi.json --${KEYOPT:-genkey} $1.keys.json | grep "Raw address:" | cut -d ' ' -f 3)
 echo ADDR=$CONTRACT_ADDRESS
 
-echo "[$0] request giver $1"
+echo "[$0] request giver..."
 ./giver.sh $CONTRACT_ADDRESS $BALANCE
 
 echo "[$0] deploy $1"

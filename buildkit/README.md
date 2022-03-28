@@ -30,7 +30,7 @@ export WALLET_PUBLIC=...
 export WALLET_SECRET=...
 ```
 
-1. Write dockerfile.yaml (this specification is far from complete, think of it as a proof of concept)
+2. Write dockerfile.yaml (this specification is far from complete, think of it as a proof of concept)
 
 ```yaml
 # syntax=buildkit-gosh
@@ -50,7 +50,7 @@ steps:
       # here will be gosh mounts (WIP)
 ```
 
-1. Now build an image
+3. Now build an image
 
 ```bash
 # run buildkitd containered
@@ -72,7 +72,7 @@ buildctl --addr=docker-container://buildkitd build \
 
 Here we parameterize the image build process with our wallet credentials.
 
-1. Sign the image (WIP: will be automatical i nrelease)
+4. Sign the image (WIP: will be automatical i nrelease)
 
 ```bash
 # add a label WALLET_PUBLIC to the image
@@ -94,7 +94,7 @@ docker run --rm -ti content-signature sign \
 
 Now we have signed the image!
 
-We can check the image signature with our public key
+### We can check the image signature with our public key
 
 ```bash
 docker run --rm -ti content-signature check\

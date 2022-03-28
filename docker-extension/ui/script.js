@@ -1,6 +1,28 @@
 async function command(cmd, args, callbacks) {
    return window.ddClient.extension.vm.cli.exec("/command/" + cmd, args, callbacks);
 }
+
+async function check_image() {
+  public_key = "dummy value";
+  image_hash = "dummy content";
+  await command("ensure-image-signature.sh", [public_key, image_hash], {
+    stream: {
+      onOutput: (data) => {
+        document.getElementById("docker-ps").innerHTML += `
+        ${JSON.stringify(data)}
+`;
+      },
+      onError: (error) => {
+        docker.getElementById("docker-ps").innerHTML = "Error: " + error;
+      },
+      onClose: (exitCode) => {
+        console.log("OnClose exit code " + exitCode);
+      }
+    }
+  });
+   
+}
+
 async function init() {
   await command("docker-ps.sh", [], {
     stream: {

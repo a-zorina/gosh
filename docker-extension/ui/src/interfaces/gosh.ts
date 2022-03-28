@@ -6,10 +6,10 @@ export type id = string;
 
 export type DataRow = {
   validated: boolean
-  containerHash: number
+  containerHash: string
   containerName: string
-  imageHash: number
-  buildProvider: number
+  imageHash: string
+  buildProvider: string
 }
 
 export type DataColumn<T> = {
@@ -20,11 +20,11 @@ export type DataColumn<T> = {
 
 export type Image = {
   validated: boolean
-  imageHash: number
-  buildProvider: number
+  imageHash: string
+  buildProvider: string
 }
 
 export type Container = Image & {
-  containerHash: number
+  containerHash: string
   containerName: string
 }

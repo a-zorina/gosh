@@ -81,18 +81,10 @@ const Main:React.FunctionComponent<{}> = () => {
     []
   );
 
-  const data = React.useMemo(() => ([{
-    validated: false,
-    containerHash: 78165381872341234,
-    containerName: "nginx-main",
-    imageHash: 1948731,
-    buildProvider: 239182,
-  }]), undefined);
-
   const dataImage = React.useMemo(() => ([{
     validated: false,
-    imageHash: 17862459821341,
-    buildProvider: 78165381872341234,
+    imageHash: "17862459821341",
+    buildProvider: "78165381872341234",
   }]), undefined);
 
 
@@ -100,8 +92,7 @@ const Main:React.FunctionComponent<{}> = () => {
     DockerClient.getContainers()
     .then((value) => {
       console.log(value);
-      setContainers(value);
-
+      setContainers(value || []);
       //do stuff
     });
 
@@ -117,7 +108,7 @@ const Main:React.FunctionComponent<{}> = () => {
     <Container fluid className="content-container">
       <Row>
         <Col md={12} lg={12}>
-          <Table<ContainerType> columns={columns} data={data} />
+          <Table<ContainerType> columns={columns} data={containers} />
 
           <Table<ImageType> columns={columnsImage} data={dataImage} />
         </Col>

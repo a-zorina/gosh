@@ -7,3 +7,9 @@ export interface FormGroupProps {
     error?: string | boolean,
     theme?: any
   }
+
+
+   
+export interface Window {
+  ddClient: any;
+}

@@ -24,7 +24,6 @@ case "$1" in
             --opt wallet_secret="$WALLET_SECRET" \
             --opt wallet_public="$WALLET_PUBLIC" \
             --opt env=env.JAEGER_TRACE=localhost:6831 \
-            --opt log=1 \
             --output type=image,name="$DOCKER_REG"/buildctl-gosh-simple,push=true
         ;;
     runctl)

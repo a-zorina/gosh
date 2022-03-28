@@ -72,7 +72,7 @@ buildctl --addr=docker-container://buildkitd build \
 
 Here we parameterize the image build process with our wallet credentials.
 
-4. Sign the image (WIP: will be automatical i nrelease)
+4. Sign the image (WIP: will be part of build image process)
 
 ```bash
 # add a label WALLET_PUBLIC to the image

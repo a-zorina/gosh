@@ -11,7 +11,7 @@ import {
 } from "../interfaces";
 
 const Main:React.FunctionComponent<{}> = () => {
-  const [containers, setContainers] = useState<Array<ContainerType>>();
+  const [containers, setContainers] = useState<Array<ContainerType>>([]);
 
   const columns: Array<DataColumn<ContainerType>> = React.useMemo(
     () => [

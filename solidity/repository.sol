@@ -5,12 +5,7 @@ pragma AbiHeader pubkey;
 
 import "Upgradable.sol";
 import "commit.sol";
-
-abstract contract ASnapshot {
-    constructor(uint256 value0, address rootrepo, string nameBranch) public {}
-    function setSnapshotCode(TvmCell code, TvmCell data) public {}
-    function setSnapshot(string snaphot) public {}
-}
+import "snapshot.sol";
 
 struct Item {
         string key;
@@ -30,22 +25,21 @@ contract Repository is Upgradable{
     address _rootGosh;
     string _name;
     mapping(string => Item) _Branches;
-    
+
     modifier onlyOwner {
         require(msg.sender == _rootGosh,500);
         _;
     }
-    
+
     constructor(uint256 value0, string name) public {
-        require(msg.value > 1.4 ton, 100);
         tvm.accept();
         pubkey = value0;
         _rootGosh = msg.sender;
         _name = name;
-        deployNewSnapshot("master");
     }
-    
+
     function deployNewSnapshot(string name) public onlyOwner {
+        require(msg.value > 1.4 ton, 100);
         TvmBuilder b;
         b.store(address(this));
         b.store(name);
@@ -54,10 +48,9 @@ contract Repository is Upgradable{
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_dataSnapshot);
         TvmCell s1 = tvm.insertPubkey(_contractflex, pubkey);
         address addr = address.makeAddrStd(0, tvm.hash(s1));
-        TvmCell payload = tvm.encodeBody(ASnapshot, pubkey, address(this), name);
-        addr.transfer({stateInit: s1, body: payload, value: 1 ton});
-        ASnapshot(addr).setSnapshotCode{value: 0.1 ton, bounce: true, flag: 1}(m_codeSnapshot, m_dataSnapshot);
-        ASnapshot(addr).setSnapshot{value: 0.1 ton, bounce: true, flag: 1}("");       
+        new Snapshot{stateInit:s1, value: 1 ton, wid: 0}(pubkey, address(this), name);
+        Snapshot(addr).setSnapshotCode{value: 0.1 ton, bounce: true, flag: 1}(m_codeSnapshot, m_dataSnapshot);
+        Snapshot(addr).setSnapshot{value: 0.1 ton, bounce: true, flag: 1}("");
         _Branches["master"] = (Item("master", address.makeAddrNone(), addr));
     }
 
@@ -79,12 +72,12 @@ contract Repository is Upgradable{
         if (_Branches.exists(fromname) == false) { return; }
         _Branches[newname] = Item(newname, _Branches[fromname].value, getSnapshotAddr(newname));
     }
-    
+
     function deleteBranch(string name) public {
         require(msg.value > 0.1 ton, 100);
         delete _Branches[name];
     }
-    
+
     function deployCommit(string nameBranch, string nameCommit, string fullCommit) public {
         require(msg.value > 1.3 ton, 100);
         require(_Branches.exists(nameBranch));
@@ -100,18 +93,18 @@ contract Repository is Upgradable{
         Commit(addr).setBlob{value: 0.2 ton}(m_BlobCode, m_BlobData);
         _Branches[nameBranch] = Item(nameBranch, addr, _Branches[nameBranch].snapshot);
     }
-    
-    function onCodeUpgrade() internal override {   
+
+    function onCodeUpgrade() internal override {
     }
-    
+
     //Setters
-    
+
     function setCommit(TvmCell code, TvmCell data) public  onlyOwner {
         tvm.accept();
         m_CommitCode = code;
         m_CommitData = data;
     }
-    
+
     function setBlob(TvmCell code, TvmCell data) public  onlyOwner {
         tvm.accept();
         m_BlobCode = code;
@@ -125,26 +118,25 @@ contract Repository is Upgradable{
     }
 
     //Getters
-    
+
     function getAddrBranch(string name) external view returns(Item) {
         return _Branches[name];
     }
-    
+
     function getAllAddress() external view returns(Item[]) {
         Item[] AllBranches;
-        for ((string _key, Item value) : _Branches) { 
+        for ((string _key, Item value) : _Branches) {
             _key;
             AllBranches.push(value);
         }
         return AllBranches;
     }
-    
+
     function getCommitCode() external view returns(TvmCell) {
         return m_CommitCode;
     }
-    
+
     function getGoshAdress() external view returns(address) {
         return _rootGosh;
     }
 }
-

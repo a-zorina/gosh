@@ -4,16 +4,11 @@
 
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[-1]}")
 cd "$SCRIPT_DIR" || exit
-DOCKER_REG="${DOCKER_REG:-127.0.0.1:5000}"
+DOCKER_REG="${DOCKER_REG:-257f3948.gra7.container-registry.ovh.net/library}"
 
 case "$1" in
-    build-old)
-        docker build \
-            -t gosh-simple-example \
-            -f docker-gosh.yaml \
-            .
-        ;;
     buildctl)
+        set -x
         buildctl --addr=docker-container://buildkitd build \
             --frontend gateway.v0 \
             --local dockerfile=. \
@@ -22,8 +17,8 @@ case "$1" in
             --opt filename=docker-gosh-buildctl.yaml \
             --opt wallet="$WALLET" \
             --opt wallet_secret="$WALLET_SECRET" \
-            --opt wallet_public="$WALLET_PUBLIC" \
-            --opt env=env.JAEGER_TRACE=localhost:6831 \
+            --opt label:test=1 \
+            --opt log=1 \
             --output type=image,name="$DOCKER_REG"/buildctl-gosh-simple,push=true
         ;;
     runctl)

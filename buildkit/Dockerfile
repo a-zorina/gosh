@@ -11,6 +11,7 @@ RUN --mount=target=. --mount=target=/root/.cache,type=cache --mount=target=/go/p
 # FROM scratch
 FROM bash
 COPY --from=build /out/ /
-ENV GRPC_VERBOSITY=debug
+ENV WEBLOG=1
 LABEL moby.buildkit.frontend.network.none="false"
+LABEL moby.buildkit.frontend.network.host="true"
 ENTRYPOINT ["/buildkit-gosh", "frontend"]

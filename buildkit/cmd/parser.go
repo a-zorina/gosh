@@ -6,6 +6,7 @@ import (
 
 type Config struct {
 	ApiVersion string `yaml:"apiVersion"`
+	Image      string `yaml:"image"`
 	Steps      []Step `yaml:"steps"`
 }
 
@@ -18,7 +19,6 @@ type Step struct {
 type Copy struct{}
 
 type Run struct {
-	Image   string   `yaml:"image"`
 	Command []string `yaml:"command"`
 	Args    []string `yaml:"args"`
 	Mounts  []Mount  `yaml:"mounts"`

@@ -1,0 +1,27 @@
+#set -x
+
+filter() {
+    if [ -s run/stdout ]; then echo ${GREEN}; cat run/stdout; echo ${NC} | tee -a var/log/stdout; rm run/stdout; fi
+    if [ -s run/stderr ]; then echo ${RED}; cat run/stderr; echo ${NC} | tee -a var/log/stderr; rm run/stderr; fi
+}
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+while true
+do
+    echo -n "$ "
+    read input
+    case $input in
+        quit)
+            break;;
+        *)
+./gosh set_gosh_vars;
+./gosh set_args $input;
+#./helper type terse;
+./gosh build_exec_pipeline;
+./run/exec_pipeline;
+filter;
+;;
+    esac
+done

@@ -1,0 +1,61 @@
+@import '../../assets/styles/colors.scss';
+@import '../../assets/styles/mixins.scss';
+
+.header {
+  position: relative;
+
+  a {
+    svg {
+      vertical-align: middle;
+    }
+  }
+  
+  .navbar {
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .navbar-nav {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-grow: 1;
+      justify-content: space-between;
+
+      @media (max-width: 767px) {
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+
+    .navbar-brand {
+      position: relative;
+      z-index: 1109;
+      padding-right: 1rem;
+      margin-right: 2rem;
+      padding-top: 0;
+      padding-bottom: 0;
+      cursor: default;
+      white-space: nowrap;
+
+      a {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $white;
+        display: block;
+        padding: 0.45rem; 
+        padding-right: 0.5rem; 
+        border-radius: .5rem;
+
+        svg {
+          vertical-align: middle;
+          margin-right: 5px;
+          margin-left: 5px;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}

@@ -8,3 +8,5 @@
 /content-signature/**/*.js.map
 /content-signature/package-lock.json
 /content-signature/tsconfig.tsbuildinfo
+
+.yarnrc.yml

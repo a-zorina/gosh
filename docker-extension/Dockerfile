@@ -6,18 +6,17 @@ LABEL org.opencontainers.image.title="GoshDockerExtension" \
     org.opencontainers.image.vendor="Tonlabs" \
     com.docker.desktop.extension.api.version="1.0.0-beta.1"
 
-RUN apk --no-cache add curl coreutils docker
-RUN apk add --no-cache ca-certificates file iptables libc6-compat libgcc libstdc++ wget && \
+RUN apk --no-cache add curl coreutils docker yarn \
+    ca-certificates file iptables libc6-compat libgcc libstdc++ wget && \
     update-ca-certificates && \
     ln -s /lib/libc.musl-x86_64.so.1 /lib/ld-linux-x86-64.so.2
+# Bind to all network interfaces so that it can be mapped to the host OS
 
-# COPY --from=node /usr/lib /usr/lib
-# COPY --from=node /usr/local/share /usr/local/share
-# COPY --from=node /usr/local/lib /usr/local/lib
-# COPY --from=node /usr/local/include /usr/local/include
-# COPY --from=node /usr/local/bin /usr/local/bin
+COPY --chown=root ./ui-new/ /ui-app/
 
-COPY ./ui /ui
+# Bundle app source code
+RUN cd /ui-app && yarn install --silent && npm run build --silent && mv /ui-app/build /ui
+
 COPY metadata.json /
 COPY ./vm/docker-compose.yaml /
 COPY ./vm/commands/ /command/

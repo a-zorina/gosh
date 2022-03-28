@@ -11,20 +11,20 @@
   }
   
   .navbar {
-    padding: 2rem 6rem;
+    padding: 1rem 1.5rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
 
     @media (max-width: 1199px) {
-      padding: 2rem 4rem;
+      padding: 1rem 1.5rem;
     }
     @media (max-width: 991px) {
-      padding: 2rem 2rem;
+      padding: 1rem 1.5rem;
     }
     @media (max-width: 767px) {
-      padding: 1.5rem 1rem 1rem;
+      padding: 1rem 1.5rem;
     }
 
     .navbar-nav {
@@ -42,17 +42,13 @@
     .navbar-brand {
       position: relative;
       z-index: 1109;
-      padding-left: .75rem;
+      padding-left: .00025rem;
       padding-right: 1rem;
       margin-right: 2rem;
       padding-top: 0;
       padding-bottom: 0;
       cursor: default;
       white-space: nowrap;
-
-      @media (max-width: 575px) {
-        padding-left: 0.5rem;
-      }
 
       a {
         font-size: 1rem;

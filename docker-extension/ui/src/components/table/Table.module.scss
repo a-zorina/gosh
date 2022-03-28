@@ -2,9 +2,9 @@
 @import '../../assets/styles/mixins.scss';
 
 .table {
-  box-shadow: 0 0 2px rgb(58 66 75 / 5%), 0 2px 4px rgb(58 66 75 / 10%);
+  box-shadow: 0 0 1px rgb(58 66 75 / 2%), 0 1px 3px rgb(58 66 75 / 5%);
   background-color: #fff;
-  border-radius: 1rem;
+  border-radius: .5rem;
   color: $black;
   display: table;
   max-width: 100%;

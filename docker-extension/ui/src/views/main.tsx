@@ -1,6 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { MetaDecorator, Table } from "../components";
+
+import { DockerClient } from "../client" 
 
 import {
   DataColumn,
@@ -9,6 +11,8 @@ import {
 } from "../interfaces";
 
 const Main:React.FunctionComponent<{}> = () => {
+  const [containers, setContainers] = useState<Array<ContainerType>>();
+
   const columns: Array<DataColumn<ContainerType>> = React.useMemo(
     () => [
       {
@@ -90,6 +94,18 @@ const Main:React.FunctionComponent<{}> = () => {
     imageHash: 17862459821341,
     buildProvider: 78165381872341234,
   }]), undefined);
+
+
+  useEffect(() => {
+    DockerClient.getContainers()
+    .then((value) => {
+      console.log(value);
+      setContainers(value);
+
+      //do stuff
+    });
+
+  }, []);
 
   return (
     <>

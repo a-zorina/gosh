@@ -16,7 +16,7 @@ contract Commit {
     address[] _blob;
     TvmCell m_BlobCode;
     TvmCell m_BlobData;
-    
+    address _parent;
     modifier onlyOwner {
         bool checkOwn = false;
         if (msg.sender == _rootRepo) { checkOwn = true; }    
@@ -30,7 +30,8 @@ contract Commit {
         _;
     }
     
-    constructor(uint256 value0, string nameCommit, string nameBranch, string commit) public {
+    constructor(uint256 value0, string nameCommit, string nameBranch, string commit, address parent) public {
+        _parent = parent;
         tvm.accept();
         pubkey = value0;
         _rootRepo = msg.sender;
@@ -45,7 +46,6 @@ contract Commit {
         b.store(address(this));
         b.store(_nameBranch);
         b.store(version);
-        b.store(nameBlob);
         TvmCell deployCode = tvm.setCodeSalt(m_BlobCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_BlobData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
@@ -65,6 +65,11 @@ contract Commit {
     function getBlobs() external view returns(address[]) {
         return _blob;
     }
+
+     function getParent() external view returns(address) {
+        return _parent;
+    }
+   
     
     function getNameCommit() external view returns(string) {
         return _nameCommit;

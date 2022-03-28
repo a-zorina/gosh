@@ -1,4 +1,11 @@
-/* Root contract of gosh */
+/*	
+    This file is part of Ever OS.
+	
+	Ever OS is free software: you can redistribute it and/or modify 
+	it under the terms of the Apache License 2.0 (http://www.apache.org/licenses/)
+	
+	Copyright 2019-2022 (c) EverX
+*/
 pragma ton-solidity >=0.54.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
@@ -6,6 +13,7 @@ pragma AbiHeader pubkey;
 import "Upgradable.sol";
 import "repository.sol";
 
+/* Root contract of gosh */
 contract Gosh is Upgradable{
     string version = "0.0.1";
     TvmCell m_RepositoryCode;

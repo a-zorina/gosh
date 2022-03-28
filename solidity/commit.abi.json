@@ -9,7 +9,8 @@
 				{"name":"value0","type":"uint256"},
 				{"name":"nameCommit","type":"string"},
 				{"name":"nameBranch","type":"string"},
-				{"name":"commit","type":"string"}
+				{"name":"commit","type":"string"},
+				{"name":"parent","type":"address"}
 			],
 			"outputs": [
 			]
@@ -38,6 +39,14 @@
 			],
 			"outputs": [
 				{"name":"value0","type":"address[]"}
+			]
+		},
+		{
+			"name": "getParent",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
 			]
 		},
 		{
@@ -82,6 +91,7 @@
 		{"name":"check","type":"bool"},
 		{"name":"_blob","type":"address[]"},
 		{"name":"m_BlobCode","type":"cell"},
-		{"name":"m_BlobData","type":"cell"}
+		{"name":"m_BlobData","type":"cell"},
+		{"name":"_parent","type":"address"}
 	]
 }

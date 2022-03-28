@@ -6,9 +6,10 @@
   },
   "ui": {
     "dashboard-tab": {
-      "title": "Verified Docker Images",
+      "title": "Gosh verified images",
       "root": "/ui",
       "src": "index.html"
     }
   }
 }
+

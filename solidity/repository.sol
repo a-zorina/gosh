@@ -1,4 +1,11 @@
-/* Root contract of Repository */
+/*	
+    This file is part of Ever OS.
+	
+	Ever OS is free software: you can redistribute it and/or modify 
+	it under the terms of the Apache License 2.0 (http://www.apache.org/licenses/)
+	
+	Copyright 2019-2022 (c) EverX
+*/
 pragma ton-solidity >=0.54.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
@@ -7,6 +14,7 @@ import "Upgradable.sol";
 import "commit.sol";
 import "snapshot.sol";
 
+/* Root contract of Repository */
 struct Item {
         string key;
         address value;

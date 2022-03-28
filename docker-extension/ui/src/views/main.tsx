@@ -77,9 +77,6 @@ const Main:React.FunctionComponent<{}> = () => {
     []
   );
 
-//  const containers = await window.ddClient.docker.listContainers();
-//  console.log("containers: ${JSON.stringify(containers)}");
-
   const data = React.useMemo(() => ([{
     validated: false,
     containerHash: 78165381872341234,

@@ -19,8 +19,8 @@ const Router:React.FunctionComponent<{}> = () => {
       <main>
         <Routes>
           <Route path="/legal-notes/:id" element={<Content/>} />
-          <Route path="/" element={<Main/>} />
         </Routes>
+        <Main/>
       </main>
       <Footer />
     </div>

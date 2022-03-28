@@ -19,15 +19,17 @@ VALUE=$TWO_EVERS
 
 if [ "$NETWORK" == "localhost" ]; then
     WALLET=wallets/localnode/SafeMultisigWallet
-    WALLET_ADDR=$(cat $WALLET.addr)
-    WALLET_ABI=$WALLET.abi.json
-    WALLET_KEYS=$WALLET.keys.json
-    CALLED="submitTransaction {\"dest\":\"$GOSH_ADDR\",\"value\":$VALUE,\"bounce\":false,\"allBalance\":false,\"payload\":\"$PAYLOAD\"}"
-    $TONOS_CLI -u $NETWORK call $WALLET_ADDR $CALLED --abi $WALLET_ABI --sign $WALLET_KEYS > /dev/null || exit 1
-    REPO_ADDR=$($TONOS_CLI -j -u $NETWORK run $GOSH_ADDR getAddrRepository "{\"name\":\"$1\"}" --abi $GOSH_ABI | sed -n '/value0/ p' | cut -d'"' -f 4)
 else
-    echo wtf?
+    WALLET=wallets/devnet/SafeMultisigWallet
 fi
+
+WALLET_ADDR=$(cat $WALLET.addr)
+WALLET_ABI=$WALLET.abi.json
+WALLET_KEYS=$WALLET.keys.json
+
+CALLED="submitTransaction {\"dest\":\"$GOSH_ADDR\",\"value\":$VALUE,\"bounce\":false,\"allBalance\":false,\"payload\":\"$PAYLOAD\"}"
+$TONOS_CLI -u $NETWORK call $WALLET_ADDR $CALLED --abi $WALLET_ABI --sign $WALLET_KEYS > /dev/null || exit 1
+REPO_ADDR=$($TONOS_CLI -j -u $NETWORK run $GOSH_ADDR getAddrRepository "{\"name\":\"$1\"}" --abi $GOSH_ABI | sed -n '/value0/ p' | cut -d'"' -f 4)
 
 echo ===================== REPO =====================
 echo name: $1

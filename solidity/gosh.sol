@@ -27,7 +27,7 @@ contract Gosh is Upgradable{
     }
     
     function deployRepository(string name) view public {
-        require(msg.value > 2.1 ton, 100);
+        require(msg.value > 2.2 ton, 100);
         tvm.accept();
         TvmBuilder b;
         b.store(address(this));

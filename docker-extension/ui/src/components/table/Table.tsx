@@ -6,6 +6,7 @@ import styles from './Table.module.scss';
 import classnames from "classnames/bind"; 
 
 import {
+  status,
   DataColumn,
   Image as ImageType,
   Container as ContainerType
@@ -30,7 +31,7 @@ const getItemStyle = ({ isDragging, isDropAnimating }: DraggableStateSnapshot, d
   // styles we need to apply on draggables
 });
 
-const StatusDot:React.FunctionComponent<{status: "success" | "warning" | "error"}>  = ({status}) => <div className={cnb("status-dot", status)}></div>
+const StatusDot:React.FunctionComponent<{status: status}>  = ({status}) => <div className={cnb("status-dot", status)}></div>
 
 export const Table = <T extends object, >({
   columns,
@@ -202,7 +203,7 @@ export const Table = <T extends object, >({
                         {...cell.getCellProps()}
                         className={cnb("cell")}
                       >
-                        {cell.column.id === "validated" ? (cell.render("Cell") ? <StatusDot status="success"/> : <StatusDot status="warning"/>) : cell.render("Cell")}
+                        {cell.column.id === "validated" ? (cell.render("Cell") ? <StatusDot status={cell.value}/> : <StatusDot status="warning"/>) : cell.render("Cell")}
                       </div>
                     );
                   })}

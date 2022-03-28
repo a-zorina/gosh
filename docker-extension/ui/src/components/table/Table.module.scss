@@ -97,6 +97,8 @@
 
     .cell {
       padding: .5rem 1.5rem;
+      text-overflow: ellipsis;
+      overflow: hidden;
 
       &:first-child {
       }
@@ -130,4 +132,26 @@ pre code {
     background: #fc3f1d;
     box-shadow:#fc3f1d80 0px 8px 14px 0px;
   }
+
+  &.loading {
+    background: #c5c7d8;
+    box-shadow:#9299bb52 0px 8px 14px 0px;
+    -webkit-animation: blink 1.25s -0.24s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
+            animation: blink 1.25s -0.24s infinite cubic-bezier(0.2, 0.68, 0.18, 1.08);
+  }
+
+  @-webkit-keyframes blink {
+    0% {
+      opacity: 1; }
+    45% {
+      opacity: 0.3; }
+    80% {
+      opacity: 1; } }
+  @keyframes blink {
+    0% {
+      opacity: 1; }
+    45% {
+      opacity: 0.3; }
+    80% {
+      opacity: 1; } }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { MetaDecorator, Table } from "../components";
+import { MetaDecorator, Table, Button } from "../components";
 
 import { DockerClient } from "../client" 
 
@@ -81,9 +81,9 @@ const Main:React.FunctionComponent<{}> = () => {
     []
   );
 
-  const dataImage = React.useMemo(() => ([{
-    validated: false,
-    imageHash: "17862459821341",
+  const dataImage = React.useMemo<Array<ImageType>>(() => ([{
+    validated: "loading",
+    imageHash: 17862459821341,
     buildProvider: "78165381872341234",
   }]), undefined);
 
@@ -98,6 +98,23 @@ const Main:React.FunctionComponent<{}> = () => {
 
   }, []);
 
+  // const data = React.useMemo<Array<ContainerType>>(() => ([{
+  //   validated: "loading",
+  //   containerHash: 78165381872341234,
+  //   containerName: "nginx-main",
+  //   imageHash: 1948731,
+  //   buildProvider: "239182",
+  // }]), undefined);
+
+  const handlClick = () => {
+    DockerClient.getContainers()
+    .then((value) => {
+      console.log(value);
+      setContainers(value || []);
+      //do stuff
+    });
+  }
+
   return (
     <>
     <MetaDecorator
@@ -105,12 +122,18 @@ const Main:React.FunctionComponent<{}> = () => {
       description="Payments framework built on low-fees Everscale blockchain"
       keywords="ever, surf, payments, everscale, swap, trade, dex, exchange, buy, sell, forward, crypto, pamp, nft, checkout"
     />
-    <Container fluid className="content-container">
+    <Button
+      variant="primary"
+      onClick={handlClick}
+    >Update data</Button>
+    <Container fluid>
       <Row>
         <Col md={12} lg={12}>
-          <Table<ContainerType> columns={columns} data={containers} />
+          <div className="content-container">
+            <Table<ContainerType> columns={columns} data={containers} />
 
-          <Table<ImageType> columns={columnsImage} data={dataImage} />
+            <Table<ImageType> columns={columnsImage} data={dataImage} />
+          </div>
         </Col>
       </Row>
     </Container>

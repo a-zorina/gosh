@@ -4,13 +4,7 @@ export type address = string;
 
 export type id = string;
 
-export type DataRow = {
-  validated: boolean
-  containerHash: string
-  containerName: string
-  imageHash: string
-  buildProvider: string
-}
+export type status = "success" | "warning" | "error" | "loading";
 
 export type DataColumn<T> = {
   Header: string
@@ -19,12 +13,12 @@ export type DataColumn<T> = {
 }
 
 export type Image = {
-  validated: boolean
-  imageHash: string
+  validated: status
+  imageHash: number
   buildProvider: string
 }
 
 export type Container = Image & {
-  containerHash: string
+  containerHash: number
   containerName: string
 }

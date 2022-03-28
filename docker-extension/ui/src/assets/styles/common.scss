@@ -62,6 +62,8 @@ html, body, #root, .ws-app {
   // max-width: 1020px;
   // padding-left: 16px;
   // padding-right: 16px;
+  padding: 2rem;
+  padding-top: 0;
 }
 
 main {
@@ -102,26 +104,17 @@ main {
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  padding: 2rem;
-  padding-top: 0;
-
-  @media (max-width: 1199px) {
-    padding: 2rem;
-    padding-top: 0;
-  }
-  @media (max-width: 991px) {
-    padding: 2rem;
-    padding-top: 0;
-  }
-  @media (max-width: 767px) {
-    padding: 2rem;
-    padding-top: 0;
-  }
 }
 
-.main {
+.main, main {
   min-height: 800px;
   
+  button {
+    position: absolute !important;
+    top: 1rem;
+    right: 2rem;
+  }
+
   h1 {
     background: linear-gradient(96.02deg, #506DFD 0%, #769FFF 89.06%);
     -webkit-background-clip: text;

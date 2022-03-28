@@ -25,14 +25,14 @@ export class DockerClient {
   static async getContainers(): Promise<Array<Container>> {
     logger.log(`Calling getContainers...\n`);
     const containers = await window.ddClient.docker.listContainers();
-    const containersViewModel = [];
+    const containersViewModel:Array<Container> = [];
     for (var i=0; i < containers.length; i++) {
       const container = containers[i];
       const containerName = container.Names.length > 0 ? container.Names[0] : container.Id;
       const buildProvider = await DockerClient.getBuildProvider(container);
       const verificationStatus = await DockerClient.getImageStatus(container);
       containersViewModel.push({
-        validated: verificationStatus,
+        validated: verificationStatus ? "success" : "warning",
         containerHash: container.Id,
         containerName: containerName,
         imageHash: container.ImageID,

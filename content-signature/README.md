@@ -1,6 +1,6 @@
 # Content Signature Maintenance
 
-Provides ability to deploy content signature account onto EverScale network.
+Provides ability to deploy content signature account onto Gosh blockchain network.
 
 Content signature account provides proof for specific content from specific person/organisation.
 

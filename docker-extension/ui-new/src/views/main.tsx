@@ -77,7 +77,6 @@ const Main:React.FunctionComponent<{}> = () => {
     []
   );
 
-
   const data = React.useMemo(() => ([{
     validated: false,
     containerHash: 78165381872341234,

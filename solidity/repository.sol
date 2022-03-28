@@ -85,7 +85,7 @@ contract Repository is Upgradable{
         delete _Branches[name];
     }
     
-    function deployCommit(string nameBranch, string nameCommit) public {
+    function deployCommit(string nameBranch, string nameCommit, string fullCommit) public {
         require(msg.value > 1.3 ton, 100);
         require(_Branches.exists(nameBranch));
         TvmBuilder b;
@@ -96,25 +96,10 @@ contract Repository is Upgradable{
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_CommitData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
         address addr = address.makeAddrStd(0, tvm.hash(s1));
-        new Commit {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), nameCommit, nameBranch);
+        new Commit {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), nameCommit, nameBranch, fullCommit);
+        Commit(addr).setBlob{value: 0.2 ton}(m_BlobCode, m_BlobData);
         _Branches[nameBranch] = Item(nameBranch, addr, _Branches[nameBranch].snapshot);
     }
-
-    function deployBlob(string nameBranch, string nameBlob) public {
-        require(msg.value > 1.3 ton, 100);
-        require(_Branches.exists(nameBranch));
-        TvmBuilder b;
-        b.store(address(this));
-        b.store(nameBranch);
-        b.store(nameBlob);
-        TvmCell deployCode = tvm.setCodeSalt(m_BlobCode, b.toCell());
-        TvmCell _contractflex = tvm.buildStateInit(deployCode, m_CommitData);
-        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
-        address addr = address.makeAddrStd(0, tvm.hash(s1));
-        new Commit {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), nameBlob, nameBranch);
-        _Branches[nameBranch] = Item(nameBranch, addr, _Branches[nameBranch].snapshot);
-    }
-
     
     function onCodeUpgrade() internal override {   
     }

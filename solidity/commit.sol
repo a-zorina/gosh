@@ -1,28 +1,21 @@
-/* Root contract of Object */
+/* Root contract of Commit */
 pragma ton-solidity >=0.54.0;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-import "Upgradable.sol";
+import "blob.sol";
 
-struct object_id {
-    string hash;   // [GIT_MAX_RAWSZ];
-    uint8 algo;    // XXX requires 4-byte alignment
-}
-
-contract Commit is Upgradable{
+contract Commit {
+    string version = "0.0.1";
     uint256 pubkey;
     address _rootRepo;
-    string _nameBlob;
+    string _nameCommit;
     string _nameBranch;
+    string _commit;
     bool check = false;
-    
-    uint8 _parsed;
-    uint8 _type;
-    uint8 _flags;
-    object_id _hash;
-    string _short_blob;
-    address _store_link;
+    address[] _blob;
+    TvmCell m_BlobCode;
+    TvmCell m_BlobData;
     
     modifier onlyOwner {
         bool checkOwn = false;
@@ -37,30 +30,44 @@ contract Commit is Upgradable{
         _;
     }
     
-    constructor(uint256 value0, string nameBlob, string nameBranch) public {
+    constructor(uint256 value0, string nameCommit, string nameBranch, string commit) public {
         tvm.accept();
         pubkey = value0;
         _rootRepo = msg.sender;
-        _nameBlob = nameBlob;
+        _nameCommit = nameCommit;
         _nameBranch = nameBranch;
-    }
-
-    function onCodeUpgrade() internal override {   
+        _commit = commit;
     }
     
+    function deployBlob(string nameBlob, string fullblob) public onlyOwner {
+        require(msg.value > 1.3 ton, 100);
+        TvmBuilder b;
+        b.store(address(this));
+        b.store(_nameBranch);
+        b.store(version);
+        b.store(nameBlob);
+        TvmCell deployCode = tvm.setCodeSalt(m_BlobCode, b.toCell());
+        TvmCell _contractflex = tvm.buildStateInit(deployCode, m_BlobData);
+        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
+        address addr = address.makeAddrStd(0, tvm.hash(s1));
+        new Blob{stateInit:s1, value: 1 ton, wid: 0} (nameBlob, _nameBranch, fullblob);
+        _blob.push(addr);
+    }
+
     //Setters
-    function setCommit(uint8 m_parsed, uint8 m_type, uint8 m_flags, object_id m_hash) public onlyFirst {
+    function setBlob(TvmCell code, TvmCell data) public  onlyOwner {
         tvm.accept();
-        check = true;
-        _parsed = m_parsed;
-        _type = m_type;
-        _flags = m_flags;
-        _hash = m_hash;    
+        m_BlobCode = code;
+        m_BlobData = data;
     }
     
     //Getters
+    function getBlobs() external view returns(address[]) {
+        return _blob;
+    }
+    
     function getNameCommit() external view returns(string) {
-        return _nameBlob;
+        return _nameCommit;
     }
 
     function getNameBranch() external view returns(string) {

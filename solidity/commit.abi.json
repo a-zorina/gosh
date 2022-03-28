@@ -7,21 +7,37 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"value0","type":"uint256"},
-				{"name":"nameBlob","type":"string"},
-				{"name":"nameBranch","type":"string"}
+				{"name":"nameCommit","type":"string"},
+				{"name":"nameBranch","type":"string"},
+				{"name":"commit","type":"string"}
 			],
 			"outputs": [
 			]
 		},
 		{
-			"name": "setCommit",
+			"name": "deployBlob",
 			"inputs": [
-				{"name":"m_parsed","type":"uint8"},
-				{"name":"m_type","type":"uint8"},
-				{"name":"m_flags","type":"uint8"},
-				{"components":[{"name":"hash","type":"string"},{"name":"algo","type":"uint8"}],"name":"m_hash","type":"tuple"}
+				{"name":"nameBlob","type":"string"},
+				{"name":"fullblob","type":"string"}
 			],
 			"outputs": [
+			]
+		},
+		{
+			"name": "setBlob",
+			"inputs": [
+				{"name":"code","type":"cell"},
+				{"name":"data","type":"cell"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getBlobs",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address[]"}
 			]
 		},
 		{
@@ -47,14 +63,6 @@
 			"outputs": [
 				{"name":"value0","type":"address"}
 			]
-		},
-		{
-			"name": "upgrade",
-			"inputs": [
-				{"name":"state","type":"cell"}
-			],
-			"outputs": [
-			]
 		}
 	],
 	"data": [
@@ -65,16 +73,15 @@
 		{"name":"_pubkey","type":"uint256"},
 		{"name":"_timestamp","type":"uint64"},
 		{"name":"_constructorFlag","type":"bool"},
+		{"name":"version","type":"string"},
 		{"name":"pubkey","type":"uint256"},
 		{"name":"_rootRepo","type":"address"},
-		{"name":"_nameBlob","type":"string"},
+		{"name":"_nameCommit","type":"string"},
 		{"name":"_nameBranch","type":"string"},
+		{"name":"_commit","type":"string"},
 		{"name":"check","type":"bool"},
-		{"name":"_parsed","type":"uint8"},
-		{"name":"_type","type":"uint8"},
-		{"name":"_flags","type":"uint8"},
-		{"components":[{"name":"hash","type":"string"},{"name":"algo","type":"uint8"}],"name":"_hash","type":"tuple"},
-		{"name":"_short_blob","type":"string"},
-		{"name":"_store_link","type":"address"}
+		{"name":"_blob","type":"address[]"},
+		{"name":"m_BlobCode","type":"cell"},
+		{"name":"m_BlobData","type":"cell"}
 	]
 }

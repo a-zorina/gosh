@@ -86,7 +86,7 @@ export IMAGE_SHA='sha256:111...11'
 # my-target-super-image's sha256
 
 docker run --rm -ti content-signature sign \
-    -n <block_chain_net_url e.g. https://gra01.net.everos.dev>
+    -n <block_chain_net_url e.g. https://gra01.net.everos.dev> \
     -g $WALLET \
     -s $WALLET_SECRET \
     $WALLET_SECRET \  # signer secret can be different
@@ -98,8 +98,8 @@ Now we have signed the image!
 ### We can check the image signature with our public key
 
 ```bash
-docker run --rm -ti content-signature check\
-    -n <block_chain_net_url e.g. https://gra01.net.everos.dev>
+docker run --rm -ti content-signature check \
+    -n <block_chain_net_url e.g. https://gra01.net.everos.dev> \
     $WALLET_PUBLIC \
     $IMAGE_SHA
 ```

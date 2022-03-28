@@ -19,15 +19,15 @@ contract Snapshot is Upgradable{
     string _nameBranch;
     TvmCell m_codeSnapshot;
     TvmCell m_dataSnapshot;
-    
+
     modifier onlyOwner {
         bool check = false;
-        if (msg.sender == _rootRepo) { check = true; }    
+        if (msg.sender == _rootRepo) { check = true; }
         if (msg.pubkey() == pubkey) { check = true; }
         require(check ,500);
         _;
     }
-    
+
     constructor(uint256 value0, address rootrepo, string nameBranch) public {
         tvm.accept();
         pubkey = value0;
@@ -35,7 +35,7 @@ contract Snapshot is Upgradable{
         _snapshot = "";
         _nameBranch = nameBranch;
     }
-    
+
     function deployNewSnapshot(string name) public view onlyOwner {
         require(msg.value > 1.3 ton, 100);
         TvmBuilder b;
@@ -46,28 +46,28 @@ contract Snapshot is Upgradable{
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_dataSnapshot);
         TvmCell s1 = tvm.insertPubkey(_contractflex, pubkey);
         address addr = address.makeAddrStd(0, tvm.hash(s1));
-        TvmCell payload = tvm.encodeBody(ASnapshot, pubkey, _rootRepo, name); 
+        TvmCell payload = tvm.encodeBody(ASnapshot, pubkey, _rootRepo, name);
         addr.transfer({stateInit: s1, body: payload, value: 1 ton});
-        ASnapshot(addr).setSnapshotCode{value: 0.1 ton, bounce: true, flag: 1}(m_codeSnapshot, m_dataSnapshot);   
-        ASnapshot(addr).setSnapshot{value: 0.1 ton, bounce: true, flag: 1}(_snapshot);   
+        ASnapshot(addr).setSnapshotCode{value: 0.1 ton, bounce: true, flag: 1}(m_codeSnapshot, m_dataSnapshot);
+        ASnapshot(addr).setSnapshot{value: 0.1 ton, bounce: true, flag: 1}(_snapshot);
     }
 
-    function onCodeUpgrade() internal override {   
+    function onCodeUpgrade() internal override {
     }
-    
+
     //Setters
-    
+
     function setSnapshot(string snaphot) public onlyOwner {
         tvm.accept();
         _snapshot = snaphot;
     }
-    
+
     function setSnapshotCode(TvmCell code, TvmCell data) public  onlyOwner {
         tvm.accept();
         m_codeSnapshot = code;
         m_dataSnapshot = data;
     }
-    
+
     //Getters
     function getSnapshot() external view returns(string) {
         return _snapshot;
@@ -76,7 +76,7 @@ contract Snapshot is Upgradable{
     function getNameBranch() external view returns(string) {
         return _nameBranch;
     }
-    
+
     function getBranchAdress() external view returns(address) {
         return _rootRepo;
     }

@@ -7,17 +7,10 @@ import (
 func TestParser(t *testing.T) {
 	config, err := parseConfig([]byte(`
 apiVersion: 1
-<<<<<<< HEAD
 image: bash:latest
 steps:
   - name: print date
     run:
-=======
-steps:
-  - name: print date
-    run:
-      image: bash:latest
->>>>>>> main
       command: ["/url/local/bin/bash"]
       args:
       - -c

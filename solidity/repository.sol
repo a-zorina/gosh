@@ -91,7 +91,6 @@ contract Repository is Upgradable{
         TvmBuilder b;
         b.store(address(this));
         b.store(nameBranch);
-        b.store(nameCommit);
         b.store(version);
         TvmCell deployCode = tvm.setCodeSalt(m_CommitCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_CommitData);

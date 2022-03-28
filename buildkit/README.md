@@ -89,6 +89,7 @@ docker run --rm -ti content-signature sign \
     -n <block_chain_net_url e.g. https://gra01.net.everos.dev>
     -g $WALLET \
     -s $WALLET_SECRET \
+    $WALLET_SECRET \  # signer secret can be different
     $IMAGE_SHA
 ```
 

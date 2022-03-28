@@ -22,6 +22,7 @@ case "$1" in
             --opt filename=docker-gosh-buildctl.yaml \
             --opt wallet="$WALLET" \
             --opt wallet_secret="$WALLET_SECRET" \
+            --opt env=env.JAEGER_TRACE=localhost:6831 \
             --opt log=1 \
             --output type=image,name="$DOCKER_REG"/buildctl-gosh-simple,push=true
         ;;

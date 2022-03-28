@@ -2,10 +2,25 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
+	"os"
+	"strings"
 )
 
+var WebLogEnabled bool = false
+
+func initWebLog() {
+	v := strings.ToLower(strings.TrimSpace(os.Getenv("WEBLOG")))
+	if v != "" && v != "0" && v != "no" && v != "false" {
+		WebLogEnabled = true
+	}
+}
+
 func p(msg string) string {
-	// TODO: mount log file via llb.Local
+	if WebLogEnabled {
+		http.Get("http://localhost:8888/?" + url.Values{"log": {msg}}.Encode())
+	}
 	return msg
 }
 

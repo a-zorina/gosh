@@ -7,10 +7,10 @@ import (
 func TestParser(t *testing.T) {
 	config, err := parseConfig([]byte(`
 apiVersion: 1
+image: bash:latest
 steps:
   - name: print date
     run:
-      image: bash:latest
       command: ["/url/local/bin/bash"]
       args:
       - -c
@@ -26,6 +26,10 @@ steps:
 		t.Errorf("Wrong number of steps")
 	}
 
+	if config.Image != "bash:latest" {
+		t.Errorf("Wrong image")
+	}
+
 	step := config.Steps[0]
 
 	if step.Run.Command == nil {
@@ -34,10 +38,6 @@ steps:
 
 	if step.Name != "print date" {
 		t.Errorf("Wrong step name: %s", config.Steps[0].Name)
-	}
-
-	if step.Run.Image != "bash:latest" {
-		t.Errorf("Wrong image name")
 	}
 
 	if step.Copy != nil {

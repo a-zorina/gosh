@@ -13,6 +13,7 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	initWebLog()
 	rootCmd.AddCommand(frontendCmd())
 	if err := rootCmd.Execute(); err != nil {
 		logrus.Fatal(err)

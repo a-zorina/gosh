@@ -1,10 +1,11 @@
-DOCKER_REG      = 127.0.0.1:5000
+# DOCKER_REG      = 127.0.0.1:5000
+DOCKER_REG      = 257f3948.gra7.container-registry.ovh.net/library
 VERSION         = latest
 IMAGE_REFERENCE = ${DOCKER_REG}/buildkit-gosh
 DOCKER          = docker
 
 
-all: image build-example run-example
+all: image build-signed-example run-signed-example
 
 .PHONE: prepare
 prepare:
@@ -50,3 +51,17 @@ run-example:
 	@echo Run sample image
 	@echo ------------------------------------
 	./examples/simple/simple.sh runctl
+
+.PHONE: build-signed-example
+build-signed-example:
+	@echo ------------------------------------
+	@echo Build sample image
+	@echo ------------------------------------
+	./examples/signed/signed.sh buildctl
+
+.PHONE: run-signed-example
+run-signed-example:
+	@echo ------------------------------------
+	@echo Run sample image
+	@echo ------------------------------------
+	./examples/signed/signed.sh runctl

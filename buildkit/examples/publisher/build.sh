@@ -50,8 +50,9 @@ echo ===================================
 echo Sign image
 echo ===================================
 
-docker run --rm -ti teamgosh/sign-cli sign \
+docker run --rm teamgosh/sign-cli sign \
     -n "$NETWORKS" \
+    -g "$WALLET" \
     -s "$WALLET_SECRET" \
     "$WALLET_SECRET" \
     "$TARGET_IMAGE_SHA"

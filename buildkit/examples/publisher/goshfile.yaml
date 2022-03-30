@@ -9,4 +9,4 @@ steps:
       args:
         - -c
         - >-
-          (date +'%s %H:%M:%S %Z'; echo "Hi there") | tee /message.txt
+          (date +'%s %H:%M:%S %Z'; echo "Hi from simple target image") | tee /message.txt

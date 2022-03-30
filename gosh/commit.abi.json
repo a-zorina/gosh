@@ -75,6 +75,7 @@
 		}
 	],
 	"data": [
+		{"key":1,"name":"_nameObject","type":"string"}
 	],
 	"events": [
 	],
@@ -88,6 +89,7 @@
 		{"name":"_nameCommit","type":"string"},
 		{"name":"_nameBranch","type":"string"},
 		{"name":"_commit","type":"string"},
+		{"name":"_nameObject","type":"string"},
 		{"name":"check","type":"bool"},
 		{"name":"_blob","type":"address[]"},
 		{"name":"m_BlobCode","type":"cell"},

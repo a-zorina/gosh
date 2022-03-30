@@ -32,6 +32,7 @@ contract Repository is Upgradable{
     TvmCell m_dataSnapshot;
     address _rootGosh;
     string _name;
+    string static _nameObject;
     mapping(string => Item) _Branches;
 
     modifier onlyOwner {
@@ -89,10 +90,12 @@ contract Repository is Upgradable{
     function deployCommit(string nameBranch, string nameCommit, string fullCommit) public {
         require(msg.value > 1.3 ton, 100);
         require(_Branches.exists(nameBranch));
+        _nameObject = nameCommit;
         TvmBuilder b;
         b.store(address(this));
         b.store(nameBranch);
         b.store(version);
+        b.store(_nameObject);
         TvmCell deployCode = tvm.setCodeSalt(m_CommitCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_CommitData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());

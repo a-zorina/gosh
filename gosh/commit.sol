@@ -20,6 +20,7 @@ contract Commit {
     string _nameCommit;
     string _nameBranch;
     string _commit;
+    string static _nameObject;
     bool check = false;
     address[] _blob;
     TvmCell m_BlobCode;
@@ -50,10 +51,12 @@ contract Commit {
     
     function deployBlob(string nameBlob, string fullblob) public onlyOwner {
         require(msg.value > 1.3 ton, 100);
+        _nameObject = nameBlob;
         TvmBuilder b;
         b.store(address(this));
         b.store(_nameBranch);
         b.store(version);
+        b.store(_nameObject);
         TvmCell deployCode = tvm.setCodeSalt(m_BlobCode, b.toCell());
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_BlobData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());

@@ -1,6 +1,11 @@
 @import './colors.scss';
 @import './mixins.scss';
 
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
 .content-wrapper {
   margin-top: 70px;
   margin-bottom: 50px;
@@ -30,7 +35,7 @@
   }
 
   h1 {
-    
+    margin-bottom: 3rem;
   }
   a {
     scroll-margin: 20px;
@@ -41,6 +46,11 @@
   }
   p {
     margin-bottom: 1.5rem;
+  }
+  h2 {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    font-size: 1.35rem;
   }
   h4 {
     margin-top: 50px;

@@ -12,6 +12,26 @@ fn_abi=$fn.abi.json
 fn_code=$fn.tvc
 fn_keys=$fn.keys.json
 
+while getopts "fh" opt; do
+  case $opt in
+    f)
+    if [ -f $fn_keys ]; then rm $fn_keys; fi
+    shift
+    ;;
+    h)
+    echo Usage: $0 -f NETWORK
+    echo
+    echo "  -f (optional) - force to redeploy GOSH"
+    echo "  NETWORK (optional) - points to network endpoint:"
+    echo "      localhost - Evernode SE (default)"
+    echo "      net.ton.dev - devnet"
+    echo "      main.ton.dev - mainnet"
+    echo
+    exit 0
+    ;;
+  esac
+done
+
 export TVM_LINKER=tvm_linker
 export TONOS_CLI=tonos-cli
 export NETWORK=${1:-localhost}

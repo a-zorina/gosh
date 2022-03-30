@@ -2,11 +2,14 @@
 
 ### Deploy GOSH
 
-Will deploy GOSH contracts and create two files: `../gosh.addr` (contains address of the GOSH root) and `../gosh.keys` (GOSH owner's keypair). For redeploy GOSH from scratch - remove `gosh.addr` and `gosh.keys`
+Will deploy GOSH contracts and create two files: `../gosh.addr` (contains address of the GOSH root) and `../gosh.keys` (GOSH owner's keypair).
 
-NETWORK - points to endpoint: **localhost** for Evernode SE (by default), **net.ton.dev** - devnet, **main.ton.dev** - mainnet
+`-f` (optional) - remove GOSH keys-file that follows redeploy GOSH
+
+`NETWORK` (optional) - points to endpoint: **localhost** for Evernode SE (by default), **net.ton.dev** - devnet, **main.ton.dev** - mainnet
+
 ```sh
-./deploy_gosh.sh <NETWORK>
+./deploy_gosh.sh -f <NETWORK>
 ```
 
 ### Create repository

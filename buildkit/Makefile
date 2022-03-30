@@ -7,6 +7,10 @@ DOCKER          = docker
 
 all: image build-signed-example run-signed-example
 
+.PHONE: test
+test:
+	go test ./cmd
+
 .PHONE: prepare
 prepare:
 	@echo ------------------------------------

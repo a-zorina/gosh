@@ -41,7 +41,9 @@
 			"inputs": [
 			],
 			"outputs": [
-				{"name":"value0","type":"string"}
+				{"name":"sha","type":"string"},
+				{"name":"commit","type":"address"},
+				{"name":"content","type":"string"}
 			]
 		}
 	],

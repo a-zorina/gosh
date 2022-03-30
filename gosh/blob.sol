@@ -41,7 +41,7 @@ contract Blob{
         return _rootCommit;
     }
     
-    function getBlob() external view returns(string) {
-        return _blob;
+    function getBlob() external view returns(string sha, address commit, string content) {
+        return (_nameBlob, _rootCommit, _blob);
     }
 }

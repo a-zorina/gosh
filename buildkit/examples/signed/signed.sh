@@ -15,11 +15,8 @@ case "$1" in
             --local context=. \
             --opt source="$DOCKER_REG"/buildkit-gosh \
             --opt filename=docker-gosh-buildctl.yaml \
-            --opt wallet="$WALLET" \
-            --opt wallet_secret="$WALLET_SECRET" \
-            --opt label:test=1 \
-            --opt log=1 \
-            --output type=image,name="$DOCKER_REG"/buildctl-gosh-simple,push=true
+            --opt wallet_public="$WALLET_PUBLIC" \
+            --output type=image,name=teamgosh/sample-target-image,push=true
         ;;
     runctl)
         docker pull "$DOCKER_REG"/buildctl-gosh-simple

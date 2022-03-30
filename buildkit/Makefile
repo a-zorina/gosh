@@ -1,7 +1,7 @@
-DOCKER_REG      = 127.0.0.1:5000
-# DOCKER_REG      = 257f3948.gra7.container-registry.ovh.net/library
+# DOCKER_REG      = 127.0.0.1:5000
+DOCKER_REG      = teamgosh
 VERSION         = latest
-IMAGE_REFERENCE = ${DOCKER_REG}/buildkit-gosh
+IMAGE_REFERENCE = ${DOCKER_REG}/goshfile
 DOCKER          = docker
 
 
@@ -40,6 +40,13 @@ image:
 	go mod vendor
 	${DOCKER} build -f Dockerfile -t ${IMAGE_REFERENCE}:${VERSION} .
 	${DOCKER} push ${IMAGE_REFERENCE}:${VERSION}
+
+.PHONE: push_image
+push_image:
+	@echo ------------------------------------
+	@echo Push image to docker hub
+	@echo ------------------------------------
+	docker push ${IMAGE_REFERENCE}
 
 # Examples
 .PHONE: build-example

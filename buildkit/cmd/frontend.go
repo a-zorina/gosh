@@ -101,8 +101,6 @@ func frontendBuild() client.BuildFunc {
 		_ = wallet_secret
 		_ = wallet_public
 
-		// logf("[docker-gosh frontend/build] [wallet] %v", wallet)
-
 		// load config
 		config, err := loadConfig(ctx, c)
 		if err != nil {
@@ -124,16 +122,12 @@ func frontendBuild() client.BuildFunc {
 			if step.Run != nil {
 				runOptions := []llb.RunOption{
 					llb.IgnoreCache,
+					llb.Network(pb.NetMode_NONE), // important: disable internet
 					llb.WithCustomName("[docker-gosh frontend/build] " + step.Name),
-					llb.Network(pb.NetMode_NONE),
-				}
-				runOptions = append(runOptions,
 					llb.Args(append(step.Run.Command, step.Run.Args...)),
-				)
-				runSt := goshImage.Run(
-					runOptions...,
-				)
-				logf("[docker-gosh frontend/build] run: %s", dump(runOptions))
+				}
+				logf("[docker-gosh frontend/build] run: %s", dumpp(runOptions))
+				runSt := goshImage.Run(runOptions...)
 				goshImage = runSt.Root()
 				continue
 			}
@@ -143,7 +137,7 @@ func frontendBuild() client.BuildFunc {
 			llb.WithCaps(c.BuildOpts().Caps),
 		}
 
-		logf("[docker-gosh frontend/build] marshal context")
+		logf("[docker-gosh frontend/build] marshal context %s", dumpp(goshImage))
 		def, err := goshImage.Marshal(ctx, marshalOpts...)
 		if err != nil {
 			return nil, err
@@ -167,10 +161,14 @@ func frontendBuild() client.BuildFunc {
 		labels := filter(opts, labelPrefix)
 		labels["WALLET_PUBLIC"] = wallet_public
 
+		env := []string{
+			"PATH=" + system.DefaultPathEnv(def.Constraints.Platform.OS),
+		}
+
 		imgConfig := ocispecs.ImageConfig{
 			Labels:     labels,
 			WorkingDir: "/",
-			Env:        []string{"PATH=" + system.DefaultPathEnv(def.Constraints.Platform.OS)},
+			Env:        env,
 		}
 
 		img := ocispecs.Image{

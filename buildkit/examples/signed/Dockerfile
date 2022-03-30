@@ -1,2 +1,0 @@
-FROM 257f3948.gra7.container-registry.ovh.net/library/buildctl-gosh-simple:latest
-LABEL WALLET_PUBLIC="95c06aa743d1f9000dd64b75498f106af4b7e7444234d7de67ea26988f6181df"

@@ -1,4 +1,4 @@
-# syntax=257f3948.gra7.container-registry.ovh.net/library/buildkit-gosh
+# syntax=teamgosh/goshfile
 
 apiVersion: 1
 image: bash:latest

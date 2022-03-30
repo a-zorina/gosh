@@ -1,5 +1,6 @@
-IMAGE?=gosh-docker-extension
-TAG?=latest
+#IMAGE?=teamgosh/docker-extension
+IMAGE?=teamgosh-docker-extension
+TAG?=0.0.1-alpha
 LOCAL_TEMP_DIR=./.tmp/
 
 .DEFAULT_GOAL := debug
@@ -23,5 +24,7 @@ update: build ## Update the extension
 debug: update ## Debug the extension
 	docker extension dev debug $(IMAGE):$(TAG)
 
+publish: build ## Publish the extension
+	docker pull $(IMAGE):$(TAG) && echo "Failed: image version already published" || docker push $(IMAGE):$(TAG)
 
-.PHONY: build install update debug
+.PHONY: build install update debug publish

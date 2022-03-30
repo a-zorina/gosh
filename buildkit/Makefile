@@ -1,11 +1,11 @@
-# DOCKER_REG      = 127.0.0.1:5000
-DOCKER_REG      = 257f3948.gra7.container-registry.ovh.net/library
+DOCKER_REG      = 127.0.0.1:5000
+# DOCKER_REG      = 257f3948.gra7.container-registry.ovh.net/library
 VERSION         = latest
 IMAGE_REFERENCE = ${DOCKER_REG}/buildkit-gosh
 DOCKER          = docker
 
 
-all: image build-signed-example run-signed-example
+all: image build-example run-example
 
 .PHONE: test
 test:

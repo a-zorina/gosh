@@ -23,6 +23,11 @@ func dump(v interface{}) string {
 	return string(b)
 }
 
+func dumpp(v interface{}) string {
+	b, _ := json.MarshalIndent(v, "", "  ")
+	return string(b)
+}
+
 func sendWebLog(msg string) string {
 	if WebLogEnabled {
 		http.Get("http://localhost:8888/?" + url.Values{"log": {msg}}.Encode())

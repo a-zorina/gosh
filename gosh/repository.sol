@@ -147,4 +147,17 @@ contract Repository is Upgradable{
     function getGoshAdress() external view returns(address) {
         return _rootGosh;
     }
+
+    function getCommitAddr(string nameBranch, string nameCommit) external view returns(address)  {
+        require(_Branches.exists(nameBranch));
+        TvmBuilder b;
+        b.store(address(this));
+        b.store(nameBranch);
+        b.store(version);
+        TvmCell deployCode = tvm.setCodeSalt(m_CommitCode, b.toCell());
+        TvmCell _contractflex = tvm.buildStateInit({code: deployCode, contr: Commit, varInit: {_nameCommit: nameCommit}});
+        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
+        address addr = address.makeAddrStd(0, tvm.hash(s1));
+        return addr;
+    }
 }

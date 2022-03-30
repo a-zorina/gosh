@@ -83,6 +83,15 @@
 				{"name":"value3","type":"address"},
 				{"name":"value4","type":"string"}
 			]
+		},
+		{
+			"name": "getBlobAddr",
+			"inputs": [
+				{"name":"nameBlob","type":"string"}
+			],
+			"outputs": [
+				{"name":"value0","type":"address"}
+			]
 		}
 	],
 	"data": [

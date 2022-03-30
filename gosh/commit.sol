@@ -93,4 +93,17 @@ contract Commit {
     function getCommit() external view returns (address, string, string, address, string) {
         return (_rootRepo, _nameBranch, _nameCommit, _parent, _commit);
     }
+
+    function getBlobAddr(string nameBlob) external view returns(address) {
+        tvm.accept();
+        TvmBuilder b;
+        b.store(address(this));
+        b.store(_nameBranch);
+        b.store(version);
+        TvmCell deployCode = tvm.setCodeSalt(m_BlobCode, b.toCell());
+        TvmCell _contractflex = tvm.buildStateInit({code: deployCode, contr: Blob, varInit: {_nameBlob: nameBlob}});
+        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
+        address addr = address.makeAddrStd(0, tvm.hash(s1));
+        return addr;
+    }
 }

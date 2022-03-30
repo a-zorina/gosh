@@ -16,7 +16,8 @@ fi
 if [ -e $1.keys.json ]; then
     KEYOPT=setkey
 fi
-BALANCE=${2:-2000000000}
+TWO_EVERS=2000000000
+BALANCE=${2:-$TWO_EVERS}
 
 echo "[$0] genaddr..."
 CONTRACT_ADDRESS=$($TONOS_CLI genaddr $1.tvc $1.abi.json --${KEYOPT:-genkey} $1.keys.json | grep "Raw address:" | cut -d ' ' -f 3)

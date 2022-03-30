@@ -14,16 +14,15 @@ pragma AbiHeader pubkey;
 contract Blob{
     string version = "0.0.1";
     address _rootCommit;
-    string _nameBlob;
+    string static _nameBlob;
     string _nameBranch;
     bool check = false;
     string _blob;
     
-    constructor(string nameBlob, string nameBranch, string blob) public {
+    constructor(string nameBranch, string blob) public {
         tvm.accept();
         _rootCommit = msg.sender;
         _nameBranch = nameBranch;
-        _nameBlob = nameBlob;
         _blob = blob;
     }
     

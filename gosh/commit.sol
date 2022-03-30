@@ -17,10 +17,9 @@ contract Commit {
     string version = "0.0.1";
     uint256 pubkey;
     address _rootRepo;
-    string _nameCommit;
+    string static _nameCommit;
     string _nameBranch;
     string _commit;
-    string static _nameObject;
     bool check = false;
     address[] _blob;
     TvmCell m_BlobCode;
@@ -39,29 +38,26 @@ contract Commit {
         _;
     }
     
-    constructor(uint256 value0, string nameCommit, string nameBranch, string commit, address parent) public {
+    constructor(uint256 value0, string nameBranch, string commit, address parent) public {
         _parent = parent;
         tvm.accept();
         pubkey = value0;
         _rootRepo = msg.sender;
-        _nameCommit = nameCommit;
         _nameBranch = nameBranch;
         _commit = commit;
     }
     
     function deployBlob(string nameBlob, string fullblob) public onlyOwner {
         tvm.accept();
-        _nameObject = nameBlob;
         TvmBuilder b;
         b.store(address(this));
         b.store(_nameBranch);
         b.store(version);
-        b.store(_nameObject);
         TvmCell deployCode = tvm.setCodeSalt(m_BlobCode, b.toCell());
-        TvmCell _contractflex = tvm.buildStateInit(deployCode, m_BlobData);
+        TvmCell _contractflex = tvm.buildStateInit({code: deployCode, contr: Blob, varInit: {_nameBlob: nameBlob}});
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
         address addr = address.makeAddrStd(0, tvm.hash(s1));
-        new Blob{stateInit:s1, value: 1 ton, wid: 0} (nameBlob, _nameBranch, fullblob);
+        new Blob{stateInit:s1, value: 1 ton, wid: 0} (_nameBranch, fullblob);
         _blob.push(addr);
     }
 

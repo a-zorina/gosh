@@ -6,7 +6,6 @@
 		{
 			"name": "constructor",
 			"inputs": [
-				{"name":"nameBlob","type":"string"},
 				{"name":"nameBranch","type":"string"},
 				{"name":"blob","type":"string"}
 			],
@@ -47,6 +46,7 @@
 		}
 	],
 	"data": [
+		{"key":1,"name":"_nameBlob","type":"string"}
 	],
 	"events": [
 	],

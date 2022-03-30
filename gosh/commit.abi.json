@@ -7,7 +7,6 @@
 			"name": "constructor",
 			"inputs": [
 				{"name":"value0","type":"uint256"},
-				{"name":"nameCommit","type":"string"},
 				{"name":"nameBranch","type":"string"},
 				{"name":"commit","type":"string"},
 				{"name":"parent","type":"address"}
@@ -87,7 +86,7 @@
 		}
 	],
 	"data": [
-		{"key":1,"name":"_nameObject","type":"string"}
+		{"key":1,"name":"_nameCommit","type":"string"}
 	],
 	"events": [
 	],
@@ -101,7 +100,6 @@
 		{"name":"_nameCommit","type":"string"},
 		{"name":"_nameBranch","type":"string"},
 		{"name":"_commit","type":"string"},
-		{"name":"_nameObject","type":"string"},
 		{"name":"check","type":"bool"},
 		{"name":"_blob","type":"address[]"},
 		{"name":"m_BlobCode","type":"cell"},

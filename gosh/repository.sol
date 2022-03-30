@@ -32,7 +32,6 @@ contract Repository is Upgradable{
     TvmCell m_dataSnapshot;
     address _rootGosh;
     string _name;
-    string static _nameObject;
     mapping(string => Item) _Branches;
 
     modifier onlyOwner {
@@ -90,17 +89,15 @@ contract Repository is Upgradable{
     function deployCommit(string nameBranch, string nameCommit, string fullCommit) public {
         tvm.accept();
         require(_Branches.exists(nameBranch));
-        _nameObject = nameCommit;
         TvmBuilder b;
         b.store(address(this));
         b.store(nameBranch);
         b.store(version);
-        b.store(_nameObject);
         TvmCell deployCode = tvm.setCodeSalt(m_CommitCode, b.toCell());
-        TvmCell _contractflex = tvm.buildStateInit(deployCode, m_CommitData);
+        TvmCell _contractflex = tvm.buildStateInit({code: deployCode, contr: Commit, varInit: {_nameCommit: nameCommit}});
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
         address addr = address.makeAddrStd(0, tvm.hash(s1));
-        new Commit {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), nameCommit, nameBranch, fullCommit, _Branches[nameBranch].value);
+        new Commit {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), nameBranch, fullCommit, _Branches[nameBranch].value);
         Commit(addr).setBlob{value: 0.2 ton}(m_BlobCode, m_BlobData);
         _Branches[nameBranch] = Item(nameBranch, addr, _Branches[nameBranch].snapshot);
     }

@@ -24,7 +24,8 @@ contract Gosh is Upgradable{
     TvmCell m_BlobData;
     TvmCell m_codeSnapshot;
     TvmCell m_dataSnapshot;
-
+    uint256 pubkey;
+    
     modifier onlyOwner {
         require(msg.pubkey() == tvm.pubkey(),500);
         _;
@@ -32,6 +33,7 @@ contract Gosh is Upgradable{
 
     constructor() public {
         tvm.accept();
+	pubkey = msg.pubkey();
     }
 
     function deployRepository(string name) view public {
@@ -45,7 +47,7 @@ contract Gosh is Upgradable{
         TvmCell _contractflex = tvm.buildStateInit(deployCode, m_RepositoryData);
         TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
         address addr = address.makeAddrStd(0, tvm.hash(s1));
-        new Repository {stateInit:s1, value: 0.4 ton, wid: 0} (msg.pubkey(), name);
+        new Repository {stateInit:s1, value: 0.4 ton, wid: 0} (pubkey, name);
         Repository(addr).setCommit{value: 0.2 ton}(m_CommitCode, m_CommitData);
         Repository(addr).setBlob{value: 0.2 ton}(m_BlobCode, m_BlobData);
         Repository(addr).setSnapshot{value: 0.2 ton}(m_codeSnapshot, m_dataSnapshot);

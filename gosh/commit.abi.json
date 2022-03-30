@@ -72,6 +72,18 @@
 			"outputs": [
 				{"name":"value0","type":"address"}
 			]
+		},
+		{
+			"name": "getCommit",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"address"},
+				{"name":"value1","type":"string"},
+				{"name":"value2","type":"string"},
+				{"name":"value3","type":"address"},
+				{"name":"value4","type":"string"}
+			]
 		}
 	],
 	"data": [

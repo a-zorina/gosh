@@ -93,4 +93,8 @@ contract Commit {
     function getRepoAdress() external view returns(address) {
         return _rootRepo;
     }
+
+    function getCommit() external view returns (address, string, string, address, string) {
+        return (_rootRepo, _nameBranch, _nameCommit, _parent, _commit);
+    }
 }

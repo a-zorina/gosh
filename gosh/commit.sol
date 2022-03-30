@@ -50,7 +50,7 @@ contract Commit {
     }
     
     function deployBlob(string nameBlob, string fullblob) public onlyOwner {
-        require(msg.value > 1.3 ton, 100);
+        tvm.accept();
         _nameObject = nameBlob;
         TvmBuilder b;
         b.store(address(this));

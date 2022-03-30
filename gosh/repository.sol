@@ -48,7 +48,7 @@ contract Repository is Upgradable{
     }
 
     function deployNewSnapshot(string name) public onlyOwner {
-        require(msg.value > 1.4 ton, 100);
+        tvm.accept();
         TvmBuilder b;
         b.store(address(this));
         b.store(name);
@@ -88,7 +88,7 @@ contract Repository is Upgradable{
     }
 
     function deployCommit(string nameBranch, string nameCommit, string fullCommit) public {
-        require(msg.value > 1.3 ton, 100);
+        tvm.accept();
         require(_Branches.exists(nameBranch));
         _nameObject = nameCommit;
         TvmBuilder b;

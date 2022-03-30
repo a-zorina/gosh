@@ -47,13 +47,15 @@
         display: block;
         padding: 0.45rem; 
         padding-right: 0.5rem; 
+        padding-left: 0; 
         border-radius: .5rem;
 
         svg {
           vertical-align: middle;
           margin-right: 5px;
-          margin-left: 5px;
-          transform: translateY(-2px);
+          transform: translateY(0px);
+          width: 80px;
+          height: auto;
         }
       }
     }

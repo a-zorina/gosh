@@ -15,7 +15,7 @@ body {
   padding: 0;
   letter-spacing: -.03em;
   background-color: $background;
-  color: $white
+  color: $dark
 }
 
 a {
@@ -77,6 +77,8 @@ main {
   flex-grow: 1;
 }
 
+.modal-body {}
+
 .align-left {
   text-align: left;
 }
@@ -106,13 +108,25 @@ main {
   align-items: stretch;
 }
 
+.modal-body {
+  & > * {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 .main, main {
-  min-height: 800px;
-  
-  button {
+  .button-block {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     position: absolute !important;
     top: 1rem;
     right: 2rem;
+
+    & > * {
+      margin-left: .5rem;
+    }
   }
 
   h1 {

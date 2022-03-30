@@ -14,24 +14,19 @@ const Content: FunctionComponent<{title?: string, path?: string}> = ({title, pat
 
   useEffect(() => {
     setContent('');
+    const filepath = path ? path : id;
     async function getContent () {
-      const file = await import(`../content/${id}.md`);
+      const file = await import(`../content/${filepath}.md`);
       const response = await fetch(file.default);
       const markdown = await response.text();
       await setContent(markdown);
     }
     getContent();
-  }, [id]);
+  }, [id, path]);
 
   useEffect(() => {
     if (location.hash && ref && ref.current && content) ref.current.querySelector(location.hash)!.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [content, location.hash]);
-
-  // if ( id === '' ) return (<Redirect
-  //   to={{
-  //     pathname: "/"
-  //   }}
-  // />);
 
   if (content === null ) return (<></>);
 
@@ -39,7 +34,6 @@ const Content: FunctionComponent<{title?: string, path?: string}> = ({title, pat
     <Container fluid="lg">
       <Row>
         <Col lg={{ span: 10, offset: 1 }}>
-          <h1>{title}</h1>
           <section className="content-wrapper" ref={ref}>
             <ReactMarkdown rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
           </section>

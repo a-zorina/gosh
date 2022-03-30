@@ -24,7 +24,7 @@ contract Gosh is Upgradable{
     TvmCell m_BlobData;
     TvmCell m_codeSnapshot;
     TvmCell m_dataSnapshot;
-    
+
     modifier onlyOwner {
         require(msg.pubkey() == tvm.pubkey(),500);
         _;
@@ -34,16 +34,22 @@ contract Gosh is Upgradable{
         tvm.accept();
     }
 
-    function deployRepository(uint256 pubkey, string name) view public {
-        require(msg.value > 2.6 ton, 100);
-        tvm.accept();
+    function _composeStateInit(uint256 pubkey, string name) internal view returns(TvmCell) {
         TvmBuilder b;
         b.store(address(this));
         b.store(name);
         b.store(version);
         TvmCell deployCode = tvm.setCodeSalt(m_RepositoryCode, b.toCell());
-        TvmCell _contractflex = tvm.buildStateInit(deployCode, m_RepositoryData);
-        TvmCell s1 = tvm.insertPubkey(_contractflex, pubkey);
+        TvmCell stateInit = tvm.buildStateInit(deployCode, m_RepositoryData);
+        return tvm.insertPubkey(stateInit, pubkey);
+    }
+
+    function deployRepository(uint256 pubkey, string name) public view {
+        require(msg.value > 2.6 ton, 100);
+        require(pubkey > 0, 101);
+        tvm.accept();
+
+        TvmCell s1 = _composeStateInit(pubkey, name);
         address addr = address.makeAddrStd(0, tvm.hash(s1));
         new Repository {stateInit:s1, value: 0.4 ton, wid: 0} (pubkey, name);
         Repository(addr).setCommit{value: 0.2 ton}(m_CommitCode, m_CommitData);
@@ -83,16 +89,9 @@ contract Gosh is Upgradable{
 
     //Getters
 
-    function getAddrRepository(string name) external view returns(address) {
-        TvmBuilder b;
-        b.store(address(this));
-        b.store(name);
-        b.store(version);
-        TvmCell deployCode = tvm.setCodeSalt(m_RepositoryCode, b.toCell());
-        TvmCell _contractflex = tvm.buildStateInit(deployCode, m_RepositoryData);
-        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
-        address addr = address.makeAddrStd(0, tvm.hash(s1));
-        return addr;
+    function getAddrRepository(uint256 pubkey, string name) external view returns(address) {
+        TvmCell s1 = _composeStateInit(pubkey, name);
+        return address.makeAddrStd(0, tvm.hash(s1));
     }
 
     function getRepositoryCode() external view returns(TvmCell) {

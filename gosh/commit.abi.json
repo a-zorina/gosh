@@ -47,6 +47,14 @@
 			]
 		},
 		{
+			"name": "setStatus",
+			"inputs": [
+				{"name":"status","type":"bool"}
+			],
+			"outputs": [
+			]
+		},
+		{
 			"name": "getBlobs",
 			"inputs": [
 			],
@@ -106,6 +114,14 @@
 			"outputs": [
 				{"name":"value0","type":"address"}
 			]
+		},
+		{
+			"name": "getStatus",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"bool"}
+			]
 		}
 	],
 	"data": [
@@ -128,6 +144,7 @@
 		{"name":"m_BlobCode","type":"cell"},
 		{"name":"m_BlobData","type":"cell"},
 		{"name":"_parent","type":"address"},
-		{"name":"_num","type":"uint128"}
+		{"name":"_num","type":"uint128"},
+		{"name":"_isFinish","type":"bool"}
 	]
 }

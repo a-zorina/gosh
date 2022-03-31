@@ -30,6 +30,7 @@ contract Commit {
     TvmCell m_BlobData;
     address _parent;
     uint128 _num = 1;
+    bool _isFinish = false;
 
     modifier onlyOwner {
         bool checkOwn = false;
@@ -102,6 +103,11 @@ contract Commit {
         m_BlobData = data;
     }
 
+    function setStatus(bool status) public  onlyOwner {
+        tvm.accept();
+        _isFinish = status;
+    }
+
     //Getters
     function getBlobs() external view returns(address[]) {
         return _blob;
@@ -136,5 +142,9 @@ contract Commit {
     function getBlobAddr(string nameBlob) external view returns(address) {
         TvmCell s1 = _composeBlobStateInit(nameBlob);
         return address.makeAddrStd(0, tvm.hash(s1));
+    }
+
+    function getStatus() external view returns(bool) {
+        return _isFinish;
     }
 }

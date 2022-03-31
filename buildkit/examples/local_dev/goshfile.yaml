@@ -1,4 +1,4 @@
-# syntax=127.0.0.1:5000/buildkit-gosh
+# syntax=127.0.0.1:5000/goshfile
 
 apiVersion: 1
 image: bash:latest

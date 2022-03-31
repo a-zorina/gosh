@@ -4,38 +4,20 @@
 
 ![architecture](architecture.svg)
 
-## Build buildkit frontend for Gosh
+## Build and sign an image from Gosh
+
+### 1. Setup environment variables with your wallet
 
 ```bash
-go mod vendor
-docker build -f Dockerfile -t buildkit-gosh .
-docker push buildkit-gosh
-```
-
-or for custom docker registry:
-
-```bash
-go mod vendor
-docker build -f Dockerfile -t my-reg-url:5000/buildkit-gosh .
-docker push my-reg-url:5000/buildkit-gosh
-```
-
-## Build an image from Gosh
-
-1. Setup environment variables with your wallet
-
-```bash
-export WALLET=0:...
+export WALLET=...
 export WALLET_PUBLIC=...
 export WALLET_SECRET=...
 ```
 
-2. Write dockerfile.yaml (this specification is far from complete, think of it as a proof of concept)
+### 2. Write `dockerfile-for-gosh.yaml` (this specification is far from complete, think of it as a proof of concept)
 
 ```yaml
-# syntax=buildkit-gosh
-## or for custom registry
-# syntax=my-reg-url:5000/buildkit-gosh
+# syntax=teamgosh/goshfile
 
 apiVersion: 1
 image: bash:latest
@@ -50,9 +32,11 @@ steps:
       # here will be gosh mounts (WIP)
 ```
 
-3. Now build an image
+### 3. Now build an image
 
 ```bash
+TARGET_IMAGE="my-target-super-image"
+
 # run buildkitd containered
 docker run -d --name buildkitd --privileged moby/buildkit:latest
 # build image
@@ -60,46 +44,68 @@ buildctl --addr=docker-container://buildkitd build \
         --frontend gateway.v0 \
         --local dockerfile=. \
         --local context=. \
-        --opt source=buildkit-gosh \
-        # or --opt source=my-docker-reg:5000/buildkit-gosh \
-        --opt filename=dockerfile-for-gosh.yaml \
-        # TODO: not implemented yet
-        # --opt wallet="$WALLET" \
-        # --opt wallet_secret="$WALLET_SECRET" \
-        # --opt wallet_public="$WALLET_PUBLIC" \
-        --output type=image,name=my-target-super-image,push=true
+        --opt source=teamgosh/goshfile \
+        --opt filename=goshfile.yaml \
+        --opt wallet_public="$WALLET_PUBLIC" \
+        --output type=image,name="$TARGET_IMAGE",push=true
 ```
 
 Here we parameterize the image build process with our wallet credentials.
 
-4. Sign the image (WIP: will be part of build image process)
+### 4. Sign the image (WIP: will be part of build image process)
 
 ```bash
-# add a label WALLET_PUBLIC to the image
-echo "FROM my-target-super-image:latest" | docker build --label WALLET_PUBLIC=$WALLET_PUBLIC -t "my-target-super-image-signed" -
-
-export IMAGE_SHA='sha256:111...11'
-
-# build content-signature image
-(cd ../content-signnature; docker build -t content-signature .)
+docker pull $TARGET_IMAGE # buildkit push image directly to the registry and it doesn't persist locally
 
 # my-target-super-image's sha256
+TARGET_IMAGE_SHA=`docker inspect --format='{{index (split (index .RepoDigests 0) "@") 1}}' $TARGET_IMAGE`
 
-docker run --rm -ti content-signature sign \
-    -n <block_chain_net_url e.g. https://gra01.net.everos.dev> \
+docker run --rm teamgosh/sign-cli sign \
+    -n <blockchain_network e.g. https://gra01.net.everos.dev> \
     -g $WALLET \
     -s $WALLET_SECRET \
     $WALLET_SECRET \  # signer secret can be different
-    $IMAGE_SHA
+    $TARGET_IMAGE_SHA
 ```
 
 Now we have signed the image!
 
-### We can check the image signature with our public key
+## We can check the image signature with our public key
 
 ```bash
-docker run --rm -ti content-signature check \
-    -n <block_chain_net_url e.g. https://gra01.net.everos.dev> \
+TARGET_IMAGE="my-target-super-image"
+# or IMAGE_NAME="my_repo:5000/library/my-target-super-image:latest@sha256:..."
+
+WALLET_PUBLIC=$(docker inspect --format='{{.Config.Labels.WALLET_PUBLIC}}' $TARGET_IMAGE)
+
+TARGET_IMAGE_SHA=$(docker inspect --format='{{index (split (index .RepoDigests 0) "@") 1}}' $TARGET_IMAGE)
+
+docker run --rm content-signature check \
+    -n <blockchain_network e.g. https://gra01.net.everos.dev> \
     $WALLET_PUBLIC \
-    $IMAGE_SHA
+    $TARGET_IMAGE_SHA
+```
+
+**NOTE**:
+Anyone who has the image can validate it.
+The image has label WALLET_PUBLIC and image's sha256 also publically available.
+
+## Examples
+
+[Publisher example](./examples/publisher)
+
+## Build buildkit frontend for Gosh yourself
+
+```bash
+go mod vendor
+docker build -f Dockerfile -t goshfile .
+docker push goshfile
+```
+
+or for custom docker registry:
+
+```bash
+go mod vendor
+docker build -f Dockerfile -t my-reg-url:5000/goshfile .
+docker push my-reg-url:5000/goshfile
 ```

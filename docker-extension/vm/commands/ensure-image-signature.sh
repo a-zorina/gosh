@@ -4,5 +4,5 @@ PUBLISHER_KEY=$1
 IMAGE_HASH=$2
 
 cd /command/content-signature/
-node cli check --network https://gra01.net.everos.dev $PUBLISHER_KEY $IMAGE_HASH
+node cli check --network https://gra01.net.everos.dev,https://rbx01.net.everos.dev,https://eri01.net.everos.dev $PUBLISHER_KEY $IMAGE_HASH
 

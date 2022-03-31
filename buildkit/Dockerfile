@@ -8,10 +8,8 @@ ENV CGO_ENABLED=0
 RUN --mount=target=. --mount=target=/root/.cache,type=cache --mount=target=/go/pkg,type=cache \
   go build -trimpath -ldflags "-s -w" -o /out/buildkit-gosh .
 
-# FROM scratch
-FROM bash
+FROM scratch
 COPY --from=build /out/ /
-ENV WEBLOG=1
 LABEL moby.buildkit.frontend.network.none="false"
 LABEL moby.buildkit.frontend.network.host="true"
 ENTRYPOINT ["/buildkit-gosh", "frontend"]

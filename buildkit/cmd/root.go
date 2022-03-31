@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -16,6 +15,6 @@ func Execute() {
 	initWebLog()
 	rootCmd.AddCommand(frontendCmd())
 	if err := rootCmd.Execute(); err != nil {
-		logrus.Fatal(err)
+		panic(err)
 	}
 }

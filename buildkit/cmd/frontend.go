@@ -1,14 +1,19 @@
 package cmd
 
 import (
-	"context"
-
 	"buildkit-gosh/pkg/constants"
+	"context"
+	"encoding/json"
+	"strings"
 
 	"github.com/moby/buildkit/client/llb"
+	"github.com/moby/buildkit/exporter/containerimage/exptypes"
 	"github.com/moby/buildkit/frontend/gateway/client"
 	"github.com/moby/buildkit/frontend/gateway/grpcclient"
+	"github.com/moby/buildkit/solver/pb"
 	"github.com/moby/buildkit/util/appcontext"
+	"github.com/moby/buildkit/util/system"
+	ocispecs "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -27,14 +32,15 @@ const (
 	localConfigMount = "dockerfile"
 	keyFilename      = "filename"
 	sharedKeyHint    = constants.DefaultConfigFile
+	labelPrefix      = "label:"
 )
 
 func frontend(cmd *cobra.Command, args []string) error {
 	sendWebLog("start logging")
+	defer sendWebLog("end logging")
 	return grpcclient.RunFromEnvironment(appcontext.Context(), frontendBuild())
 }
 
-// docker-gosh.yaml by default
 func loadConfig(ctx context.Context, c client.Client) (*Config, error) {
 	filename := c.BuildOpts().Opts[keyFilename]
 	logf("[docker-gosh frontend/loadConfig] filename %v", filename)
@@ -50,24 +56,26 @@ func loadConfig(ctx context.Context, c client.Client) (*Config, error) {
 	configState := llb.Local(
 		localConfigMount,
 		llb.SessionID(c.BuildOpts().SessionID),
-		llb.SharedKeyHint(sharedKeyHint), // don't know
+		llb.SharedKeyHint(sharedKeyHint),
 		llb.WithCustomName("[docker-gosh frontend/loadConfig] "+name),
 	)
 
-	definition, err := configState.Marshal(ctx)
+	def, err := configState.Marshal(ctx)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to marshal local source")
 	}
 
+	logf("[docker-gosh frontend/loadConfig] definition: %s", dumpp(def))
+
 	var configFile []byte
-	result, err := c.Solve(ctx, client.SolveRequest{
-		Definition: definition.ToPB(),
+	res, err := c.Solve(ctx, client.SolveRequest{
+		Definition: def.ToPB(),
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to resolve image config")
 	}
 
-	ref, err := result.SingleRef()
+	ref, err := res.SingleRef()
 	if err != nil {
 		return nil, err
 	}
@@ -85,22 +93,23 @@ func loadConfig(ctx context.Context, c client.Client) (*Config, error) {
 func frontendBuild() client.BuildFunc {
 	return func(ctx context.Context, c client.Client) (*client.Result, error) {
 		opts := c.BuildOpts().Opts
+		logf("[docker-gosh frontend/build] opts %s", dumpp(opts))
 		wallet := opts["wallet"]
 		wallet_secret := opts["wallet_secret"]
 		wallet_public := opts["wallet_public"]
+		_ = wallet
 		_ = wallet_secret
-
-		logf("[docker-gosh frontend/build] [wallet] %v", wallet)
+		_ = wallet_public
 
 		// load config
 		config, err := loadConfig(ctx, c)
 		if err != nil {
 			return nil, err
 		}
-		logf("[docker-gosh frontend/build] config: %v", config)
+		logf("[docker-gosh frontend/build] config: %s", dumpp(config))
 
 		// init image
-		logf("[docker-gosh frontend/build] start build image %v", config.Image)
+		logf("[docker-gosh frontend/build] start build image %s", config.Image)
 		goshImage := llb.Image(
 			config.Image,
 			llb.WithMetaResolver(c),
@@ -109,36 +118,35 @@ func frontendBuild() client.BuildFunc {
 
 		// run steps
 		for _, step := range config.Steps {
-			logf("[docker-gosh frontend/build] step: %#v", step)
+			logf("[docker-gosh frontend/build] step: %s", dump(step))
 			if step.Run != nil {
 				runOptions := []llb.RunOption{
 					llb.IgnoreCache,
+					llb.Network(pb.NetMode_NONE), // important: disable internet
 					llb.WithCustomName("[docker-gosh frontend/build] " + step.Name),
-				}
-				runOptions = append(runOptions,
 					llb.Args(append(step.Run.Command, step.Run.Args...)),
-				)
-				runSt := goshImage.Run(
-					runOptions...,
-				)
-				logf("[docker-gosh frontend/build] run: %#v", runOptions)
+				}
+				logf("[docker-gosh frontend/build] run: %s", dumpp(runOptions))
+				runSt := goshImage.Run(runOptions...)
 				goshImage = runSt.Root()
 				continue
 			}
 		}
 
-		logf("[docker-gosh frontend/build] marshal context")
-		def, err := goshImage.Marshal(ctx)
+		marshalOpts := []llb.ConstraintsOpt{
+			llb.WithCaps(c.BuildOpts().Caps),
+		}
+
+		logf("[docker-gosh frontend/build] marshal context %s", dumpp(goshImage))
+		def, err := goshImage.Marshal(ctx, marshalOpts...)
 		if err != nil {
 			return nil, err
 		}
+		logf("[docker-gosh frontend/build] definition: %s", dumpp(def))
 
 		logf("[docker-gosh frontend/build] solve protobuf")
 		res, err := c.Solve(ctx, client.SolveRequest{
 			Definition: def.ToPB(),
-			FrontendOpt: map[string]string{
-				"label:WALLET_PUBLIC": wallet_public,
-			},
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to resolve dockerfile")
@@ -150,11 +158,47 @@ func frontendBuild() client.BuildFunc {
 			return nil, err
 		}
 
+		labels := filter(opts, labelPrefix)
+		labels["WALLET_PUBLIC"] = wallet_public
+
+		env := []string{
+			"PATH=" + system.DefaultPathEnv(def.Constraints.Platform.OS),
+		}
+
+		imgConfig := ocispecs.ImageConfig{
+			Labels:     labels,
+			WorkingDir: "/",
+			Env:        env,
+		}
+
+		img := ocispecs.Image{
+			Architecture: def.Constraints.Platform.Architecture,
+			Config:       imgConfig,
+			OS:           def.Constraints.Platform.OS,
+			OSFeatures:   def.Constraints.Platform.OSFeatures,
+			OSVersion:    def.Constraints.Platform.OSVersion,
+			Variant:      def.Constraints.Platform.Variant,
+		}
+		exporterImageConfig, err := json.Marshal(img)
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to marshal image config")
+		}
+		res.AddMeta(exptypes.ExporterImageConfigKey, exporterImageConfig)
 		res.SetRef(ref)
-		logf("[docker-gosh frontend/build] metadata %s", dump(res.Metadata))
+		logf("[docker-gosh frontend/build] metadata %s", dumpp(res.Metadata))
 
 		return res, nil
 	}
+}
+
+func filter(opt map[string]string, key string) map[string]string {
+	m := map[string]string{}
+	for k, v := range opt {
+		if strings.HasPrefix(k, key) {
+			m[strings.TrimPrefix(k, key)] = v
+		}
+	}
+	return m
 }
 
 // func getSelfImageSt(ctx context.Context, c client.Client, localDfSt llb.State, dfName string) (*llb.State, string, error) {

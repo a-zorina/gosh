@@ -58,7 +58,6 @@
 		{
 			"name": "getAddrRepository",
 			"inputs": [
-				{"name":"pubkey","type":"uint256"},
 				{"name":"name","type":"string"}
 			],
 			"outputs": [

@@ -35,7 +35,7 @@ contract Repository is Upgradable{
     mapping(string => Item) _Branches;
 
     modifier onlyOwner {
-        require(msg.sender == _rootGosh,500);
+        require(msg.sender == _rootGosh, 500);
         _;
     }
 
@@ -86,18 +86,24 @@ contract Repository is Upgradable{
         delete _Branches[name];
     }
 
+    function _composeCommitStateInit(string _branch, string _commit) internal view returns(TvmCell) {
+        TvmBuilder b;
+        b.store(address(this));
+        b.store(_branch);
+        b.store(version);
+        TvmCell deployCode = tvm.setCodeSalt(m_CommitCode, b.toCell());
+        TvmCell stateInit = tvm.buildStateInit({code: deployCode, contr: Commit, varInit: {_nameCommit: _commit}});
+        // return tvm.insertPubkey(stateInit, msg.pubkey());
+        return stateInit;
+    }
+
     function deployCommit(string nameBranch, string nameCommit, string fullCommit) public {
         tvm.accept();
         require(_Branches.exists(nameBranch));
-        TvmBuilder b;
-        b.store(address(this));
-        b.store(nameBranch);
-        b.store(version);
-        TvmCell deployCode = tvm.setCodeSalt(m_CommitCode, b.toCell());
-        TvmCell _contractflex = tvm.buildStateInit({code: deployCode, contr: Commit, varInit: {_nameCommit: nameCommit}});
-        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
+
+        TvmCell s1 = _composeCommitStateInit(nameBranch, nameCommit);
         address addr = address.makeAddrStd(0, tvm.hash(s1));
-        new Commit {stateInit:s1, value: 1 ton, wid: 0} (msg.pubkey(), nameBranch, fullCommit, _Branches[nameBranch].value);
+        new Commit {stateInit: s1, value: 5 ton, wid: 0}(msg.pubkey(), nameBranch, fullCommit, _Branches[nameBranch].value);
         Commit(addr).setBlob{value: 0.2 ton}(m_BlobCode, m_BlobData);
         _Branches[nameBranch] = Item(nameBranch, addr, _Branches[nameBranch].snapshot);
     }
@@ -150,14 +156,7 @@ contract Repository is Upgradable{
 
     function getCommitAddr(string nameBranch, string nameCommit) external view returns(address)  {
         require(_Branches.exists(nameBranch));
-        TvmBuilder b;
-        b.store(address(this));
-        b.store(nameBranch);
-        b.store(version);
-        TvmCell deployCode = tvm.setCodeSalt(m_CommitCode, b.toCell());
-        TvmCell _contractflex = tvm.buildStateInit({code: deployCode, contr: Commit, varInit: {_nameCommit: nameCommit}});
-        TvmCell s1 = tvm.insertPubkey(_contractflex, msg.pubkey());
-        address addr = address.makeAddrStd(0, tvm.hash(s1));
-        return addr;
+        TvmCell s1 = _composeCommitStateInit(nameBranch, nameCommit);
+        return address.makeAddrStd(0, tvm.hash(s1));
     }
 }

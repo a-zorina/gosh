@@ -18,7 +18,7 @@
 			"name": "deployBlob",
 			"inputs": [
 				{"name":"nameBlob","type":"string"},
-				{"name":"fullblob","type":"string"}
+				{"name":"fullBlob","type":"string"}
 			],
 			"outputs": [
 			]

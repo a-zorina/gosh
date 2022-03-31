@@ -1,7 +1,6 @@
 DOCKER_REG      = 127.0.0.1:5000
-# DOCKER_REG      = 257f3948.gra7.container-registry.ovh.net/library
 VERSION         = latest
-IMAGE_REFERENCE = ${DOCKER_REG}/buildkit-gosh
+IMAGE_REFERENCE = ${DOCKER_REG}/goshfile
 DOCKER          = docker
 
 
@@ -45,27 +44,23 @@ image:
 .PHONE: build-example
 build-example:
 	@echo ------------------------------------
-	@echo Build sample image
+	@echo Build example image
 	@echo ------------------------------------
-	./examples/simple/simple.sh buildctl
+	./examples/local_dev/build.sh build
 
 .PHONE: run-example
 run-example:
 	@echo ------------------------------------
-	@echo Run sample image
+	@echo Run example image
 	@echo ------------------------------------
-	./examples/simple/simple.sh runctl
+	./examples/local_dev/build.sh run
 
-.PHONE: build-signed-example
-build-signed-example:
-	@echo ------------------------------------
-	@echo Build sample image
-	@echo ------------------------------------
-	./examples/signed/signed.sh buildctl
 
-.PHONE: run-signed-example
-run-signed-example:
+.PHONE: public_image
+public_image:
 	@echo ------------------------------------
-	@echo Run sample image
+	@echo Build and push public image
 	@echo ------------------------------------
-	./examples/signed/signed.sh runctl
+	go mod vendor
+	${DOCKER} build -f Dockerfile -t teamgosh/goshfile:${VERSION} .
+	${DOCKER} push teamgosh/goshfile:${VERSION}
